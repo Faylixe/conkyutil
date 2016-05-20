@@ -651,21 +651,21 @@ class ConkyWriter:
 		""" if mpd is playing or paused, display everything between $if_mpd_playing and the matching $endif """
 		self.writeCommand('if_mpd_playing')
 
-	def if_running(self):
+	def if_running(self, process=None):
 		""" if PROCESS is running, display everything $if_running and the matching $endif. This uses the ``pidof'' command, so the -x switch is also supported. """
-		self.writeCommand('if_running')
+		self.writeCommand('if_running', process)
 
-	def if_smapi_bat_installed(self):
+	def if_smapi_bat_installed(self, index=None):
 		""" when using smapi, if the battery with index INDEX is installed, display everything between $if_smapi_bat_installed and the matching $endif """
-		self.writeCommand('if_smapi_bat_installed')
+		self.writeCommand('if_smapi_bat_installed', index)
 
-	def if_up(self):
+	def if_up(self, interface=None):
 		""" if INTERFACE exists and is up, display everything between $if_up and the matching $endif """
-		self.writeCommand('if_up')
+		self.writeCommand('if_up', interface)
 
-	def if_updatenr(self):
+	def if_updatenr(self, updatenr=None):
 		""" If it's the UPDATENR-th time that conky updates, display everything between $if_updatenr and the matching $endif. The counter resets when the highest UPDATENR is reached. Example : "{$if_updatenr 1}foo$endif{$if_updatenr 2}bar$endif{$if_updatenr 4}$endif" shows foo 25% of the time followed by bar 25% of the time followed by nothing the other half of the time. """
-		self.writeCommand('if_updatenr')
+		self.writeCommand('if_updatenr', updatenr)
 
 	def if_xmms2_connected(self):
 		""" Display everything between $if_xmms2_connected and the matching $endif if xmms2 is running. """
@@ -675,21 +675,21 @@ class ConkyWriter:
 		""" Renders an image from the path specified using Imlib2. Takes 4 optional arguments: a position, a size, a no-cache switch, and a cache flush interval. Changing the x,y position will move the position of the image, and changing the WxH will scale the image. If you specify the no-cache flag (-n), the image will not be cached. Alternately, you can specify the -f int switch to specify a cache flust interval for a particular image. Example: ${image /home/brenden/cheeseburger.jpg -p 20,20 -s 200x200} will render 'cheeseburger.jpg' at (20,20) scaled to 200x200 pixels. Conky does not make any attempt to adjust the position (or any other formatting) of images, they are just rendered as per the arguments passed. The only reason $image is part of the TEXT section, is to allow for runtime modifications, through $execp $lua_parse, or some other method. """
 		self.writeCommand('image')
 
-	def imap_messages(self):
+	def imap_messages(self, args=None):
 		""" Displays the number of messages in your global IMAP inbox by default. You can define individual IMAP inboxes separately by passing arguments to this object. Arguments are: "host user pass [-i interval (in seconds)] [-f 'folder'] [-p port] [-e 'command'] [-r retries]". Default port is 143, default folder is 'INBOX', default interval is 5 minutes, and default number of retries before giving up is 5. If the password is supplied as '*', you will be prompted to enter the password when Conky starts. """
-		self.writeCommand('imap_messages')
+		self.writeCommand('imap_messages', args)
 
-	def imap_unseen(self):
+	def imap_unseen(self, args=None):
 		""" Displays the number of unseen messages in your global IMAP inbox by default. You can define individual IMAP inboxes separately by passing arguments to this object. Arguments are: "host user pass [-i interval (in seconds)] [-f 'folder'] [-p port] [-e 'command'] [-r retries]". Default port is 143, default folder is 'INBOX', default interval is 5 minutes, and default number of retries before giving up is 5. If the password is supplied as '*', you will be prompted to enter the password when Conky starts. """
-		self.writeCommand('imap_unseen')
+		self.writeCommand('imap_unseen', args)
 
-	def include(self):
+	def include(self, path):
 		""" Loads the configfile at path, places the configsettings behind the configsettings in the orginal config and places the vars where the includevar stood. """
-		self.writeCommand('include')
+		self.writeCommand('include', path)
 
-	def ioscheduler(self):
+	def ioscheduler(self, disk):
 		""" Prints the current ioscheduler used for the given disk name (i.e. e.g. "hda" or "sdb") """
-		self.writeCommand('ioscheduler')
+		self.writeCommand('ioscheduler', disk)
 
 	def kernel(self):
 		""" Kernel version """
@@ -699,57 +699,79 @@ class ConkyWriter:
 		""" The value of /proc/sys/vm/laptop_mode """
 		self.writeCommand('laptop_mode')
 
-	def lines(self):
+	def lines(self, textfile):
 		""" Displays the number of lines in the given file """
-		self.writeCommand('lines')
+		self.writeCommand('lines', textfile)
 
-	def loadavg(self):
+	def loadavg(self, n=None):
 		""" System load average, 1 is for past 1 minute, 2 for past 5 minutes and 3 for past 15 minutes. Without argument, prints all three values separated by whitespace. """
-		self.writeCommand('loadavg')
+        # TODO : Check if n = 1|2|3
+		self.writeCommand('loadavg', n)
 
-	def loadgraph(self):
+	def loadgraph(self, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
 		""" Load1 average graph, similar to xload, with optional colours in hex, minus the #. Uses a logarithmic scale (to see small numbers) when you use the -l switch. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). """
-		self.writeCommand('loadgraph')
+        parameters = [size, gradientColor1, gradientColor2, scale]
+        if t:
+            parameters.append('-t')
+        if l:
+            parameters.append('-l')
+		self.writeCommand('loadgraph', parameters)
 
-	def lua(self):
+	def lua(self, function_name, args=None):
 		""" Executes a Lua function with given parameters, then prints the returned string. See also 'lua_load' on how to load scripts. Conky puts 'conky_' in front of function_name to prevent accidental calls to the wrong function unless you put you place 'conky_' in front of it yourself. """
-		self.writeCommand('lua')
+		self.writeCommand('lua', [function_name, args])
 
-	def lua_bar(self):
+	def lua_bar(self, function_name, size=None, args=None):
 		""" Executes a Lua function with given parameters and draws a bar. Expects result value to be an integer between 0 and 100. See also 'lua_load' on how to load scripts. Conky puts 'conky_' in front of function_name to prevent accidental calls to the wrong function unless you put you place 'conky_' in front of it yourself. """
-		self.writeCommand('lua_bar')
+		self.writeCommand('lua_bar', [size, function_name, args])
 
-	def lua_gauge(self):
+	def lua_gauge(self, function_name, size=None, args=None):
 		""" Executes a Lua function with given parameters and draws a gauge. Expects result value to be an integer between 0 and 100. See also 'lua_load' on how to load scripts. Conky puts 'conky_' in front of function_name to prevent accidental calls to the wrong function unless you put you place 'conky_' in front of it yourself. """
-		self.writeCommand('lua_gauge')
+		self.writeCommand('lua_gauge', [size, function_name, args])
 
-	def lua_graph(self):
+	def lua_graph(self, function_name, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
 		""" Executes a Lua function with and draws a graph. Expects result value to be any number, and by default will scale to show the full range. See also 'lua_load' on how to load scripts. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). Conky puts 'conky_' in front of function_name to prevent accidental calls to the wrong function unless you put you place 'conky_' in front of it yourself. """
-		self.writeCommand('lua_graph')
+        parameters = [function_name, size, gradientColor1, gradientColor2, scale]
+        if t:
+            parameters.append('-t')
+        if l:
+            parameters.append('-l')
+		self.writeCommand('lua_graph', parameters)
 
-	def lua_parse(self):
+	def lua_parse(self, function_name, args=None):
 		""" Executes a Lua function with given parameters as per $lua, then parses and prints the result value as per the syntax for Conky's TEXT section. See also 'lua_load' on how to load scripts. Conky puts 'conky_' in front of function_name to prevent accidental calls to the wrong function unless you put you place 'conky_' in front of it yourself. """
-		self.writeCommand('lua_parse')
+		self.writeCommand('lua_parse', [function_name, args])
 
 	def machine(self):
 		""" Machine, i686 for example """
 		self.writeCommand('machine')
 
-	def mails(self):
+	def mails(self, mailbox=None):
 		""" Mail count in the specified mailbox or your mail spool if not. Both mbox and maildir type mailboxes are supported. You can use a program like fetchmail to get mails from some server using your favourite protocol. See also new_mails. """
-		self.writeCommand('mails')
+		self.writeCommand('mails', mailbox)
 
-	def mboxscan(self):
+	def mboxscan(self, mbox, n=None, fw=None, sw=None):
 		""" Print a summary of recent messages in an mbox format mailbox. mbox parameter is the filename of the mailbox (can be encapsulated using '"', ie. ${mboxscan -n 10 "/home/brenden/some box"} """
-		self.writeCommand('mboxscan')
+        parameters = []
+        if n != None:
+            parameters.append('-n')
+            parameters.append(n)
+        if fw != None:
+            parameters.append('-fw')
+            parameters.append(fw)
+        if sw != None:
+            parameters.append('-sw')
+            parameters.append(sw)
+        parameters.append(mbox)
+		self.writeCommand('mboxscan', parameters)
 
 	def mem(self):
 		""" Amount of memory in use """
 		self.writeCommand('mem')
 
-	def membar(self):
+	def membar(self, size=None):
 		""" Bar that shows amount of memory in use """
-		self.writeCommand('membar')
+		self.writeCommand('membar', size)
 
 	def memeasyfree(self):
 		""" Amount of free memory including the memory that is very easily freed (buffers/cache) """
@@ -759,13 +781,18 @@ class ConkyWriter:
 		""" Amount of free memory """
 		self.writeCommand('memfree')
 
-	def memgauge(self):
+	def memgauge(self, size=None):
 		""" Gauge that shows amount of memory in use (see cpugauge) """
-		self.writeCommand('memgauge')
+		self.writeCommand('memgauge', size)
 
-	def memgraph(self):
+	def memgraph(self, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
 		""" Memory usage graph. Uses a logarithmic scale (to see small numbers) when you use the -l switch. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). """
-		self.writeCommand('memgraph')
+        parameters = [size, gradientColor1, gradientColor2, scale]
+        if t:
+            parameters.append('-t')
+        if l:
+            parameters.append('-l')
+		self.writeCommand('memgraph', parameters)
 
 	def memmax(self):
 		""" Total amount of memory """
@@ -775,29 +802,29 @@ class ConkyWriter:
 		""" Percentage of memory in use """
 		self.writeCommand('memperc')
 
-	def mixer(self):
+	def mixer(self, device=None):
 		""" Prints the mixer value as reported by the OS. On Linux, this variable uses the OSS emulation, so you need the proper kernel module loaded. Default mixer is "Vol", but you can specify one of the available OSS controls: "Vol", "Bass", "Trebl", "Synth", "Pcm", "Spkr", "Line", "Mic", "CD", "Mix", "Pcm2 ", "Rec", "IGain", "OGain", "Line1", "Line2", "Line3", "Digital1", "Digital2", "Digital3", "PhoneIn", "PhoneOut", "Video", "Radio" and "Monitor". """
-		self.writeCommand('mixer')
+		self.writeCommand('mixer', device)
 
-	def mixerbar(self):
+	def mixerbar(self, device=None):
 		""" Displays mixer value in a bar as reported by the OS. See docs for $mixer for details on arguments. """
-		self.writeCommand('mixerbar')
+		self.writeCommand('mixerbar', device)
 
-	def mixerl(self):
+	def mixerl(self, device=None:
 		""" Prints the left channel mixer value as reported by the OS. See docs for $mixer for details on arguments. """
-		self.writeCommand('mixerl')
+		self.writeCommand('mixerl', device)
 
-	def mixerlbar(self):
+	def mixerlbar(self, device=None):
 		""" Displays the left channel mixer value in a bar as reported by the OS. See docs for $mixer for details on arguments. """
-		self.writeCommand('mixerlbar')
+		self.writeCommand('mixerlbar', device)
 
-	def mixerr(self):
+	def mixerr(self, device=None):
 		""" Prints the right channel mixer value as reported by the OS. See docs for $mixer for details on arguments. """
-		self.writeCommand('mixerr')
+		self.writeCommand('mixerr', device)
 
-	def mixerrbar(self):
+	def mixerrbar(self, device=None):
 		""" Displays the right channel mixer value in a bar as reported by the OS. See docs for $mixer for details on arguments. """
-		self.writeCommand('mixerrbar')
+		self.writeCommand('mixerrbar', device)
 
 	def moc_album(self):
 		""" Album of the current MOC song """
@@ -859,9 +886,9 @@ class ConkyWriter:
 		""" Artist in current MPD song must be enabled at compile """
 		self.writeCommand('mpd_artist')
 
-	def mpd_bar(self):
+	def mpd_bar(self, size=None):
 		""" Bar of mpd's progress """
-		self.writeCommand('mpd_bar')
+		self.writeCommand('mpd_bar', size)
 
 	def mpd_bitrate(self):
 		""" Bitrate of current song """
@@ -899,17 +926,17 @@ class ConkyWriter:
 		""" Repeat status (On/Off) """
 		self.writeCommand('mpd_repeat')
 
-	def mpd_smart(self):
+	def mpd_smart(self, maxLength=None):
 		""" Prints the song name in either the form "artist - title" or file name, depending on whats available """
-		self.writeCommand('mpd_smart')
+		self.writeCommand('mpd_smart', maxLength)
 
 	def mpd_status(self):
 		""" Playing, stopped, et cetera. """
 		self.writeCommand('mpd_status')
 
-	def mpd_title(self):
+	def mpd_title(self, maxLength=None):
 		""" Title of current MPD song """
-		self.writeCommand('mpd_title')
+		self.writeCommand('mpd_title', maxLength)
 
 	def mpd_track(self):
 		""" Prints the MPD track field """
@@ -919,13 +946,13 @@ class ConkyWriter:
 		""" MPD's volume """
 		self.writeCommand('mpd_vol')
 
-	def nameserver(self):
+	def nameserver(self, index=None):
 		""" Print a nameserver from /etc/resolv.conf. Index starts at and defaults to 0. """
-		self.writeCommand('nameserver')
+		self.writeCommand('nameserver', index)
 
-	def new_mails(self):
+	def new_mails(self, mailbox=None):
 		""" Unread mail count in the specified mailbox or mail spool if not. Both mbox and maildir type mailboxes are supported. """
-		self.writeCommand('new_mails')
+		self.writeCommand('new_mails', mailbox)
 
 	def nodename(self):
 		""" Hostname """
@@ -935,211 +962,211 @@ class ConkyWriter:
 		""" Short hostname (same as 'hostname -s' shell command). """
 		self.writeCommand('nodename_short')
 
-	def nvidia(self):
+	def nvidia(self, threshold):
 		""" Nvidia graficcard support for the XNVCtrl library. Each option can be shortened to the least significant part. Temperatures are printed as float, all other values as integer. threshold - The thresholdtemperature at which the gpu slows down temp - Gives the gpu current temperature ambient - Gives current air temperature near GPU case gpufreq - Gives the current gpu frequency memfreq - Gives the current mem frequency imagequality - Which imagequality should be chosen by OpenGL applications """
-		self.writeCommand('nvidia')
+		self.writeCommand('nvidia', threshold)
 
-	def offset(self):
+	def offset(self, pixels=None):
 		""" Move text over by N pixels. See also $voffset. """
-		self.writeCommand('offset')
+		self.writeCommand('offset', pixels)
 
-	def outlinecolor(self):
+	def outlinecolor(self, color=None):
 		""" Change outline color """
-		self.writeCommand('outlinecolor')
+		self.writeCommand('outlinecolor', color)
 
-	def pb_battery(self):
+	def pb_battery(self, item):
 		""" If running on Apple powerbook/ibook, display information on battery status. The item parameter specifies, what information to display. Exactly one item must be specified. Valid items are: status - Display if battery is fully charged, charging, discharging or absent (running on AC) percent - Display charge of battery in percent, if charging or discharging. Nothing will be displayed, if battery is fully charged or absent. time - Display the time remaining until the battery will be fully charged or discharged at current rate. Nothing is displayed, if battery is absent or if it's present but fully charged and not discharging. """
-		self.writeCommand('pb_battery')
+		self.writeCommand('pb_battery', item)
 
-	def pid_chroot(self):
+	def pid_chroot(self, pid):
 		""" Directory used as rootdirectory by the process (this will be "/" unless the process did a chroot syscall) """
-		self.writeCommand('pid_chroot')
+		self.writeCommand('pid_chroot', pid)
 
-	def pid_cmdline(self):
+	def pid_cmdline(self, pid):
 		""" Command line this process was invoked with """
-		self.writeCommand('pid_cmdline')
+		self.writeCommand('pid_cmdline', pid)
 
-	def pid_cwd(self):
+	def pid_cwd(self, pid):
 		""" Current working directory of the process """
-		self.writeCommand('pid_cwd')
+		self.writeCommand('pid_cwd', pid)
 
-	def pid_environ(self):
+	def pid_environ(self, pid, varname):
 		""" Contents of a environment-var of the process """
-		self.writeCommand('pid_environ')
+		self.writeCommand('pid_environ', [pid, varname])
 
-	def pid_environ_list(self):
+	def pid_environ_list(self, pid):
 		""" List of environment-vars that the process can see """
-		self.writeCommand('pid_environ_list')
+		self.writeCommand('pid_environ_list', pid)
 
-	def pid_exe(self):
+	def pid_exe(self, pid):
 		""" Path to executed command that started the process """
-		self.writeCommand('pid_exe')
+		self.writeCommand('pid_exe', pid)
 
-	def pid_nice(self):
+	def pid_nice(self, pid):
 		""" The nice value of the process """
-		self.writeCommand('pid_nice')
+		self.writeCommand('pid_nice', pid)
 
-	def pid_openfiles(self):
+	def pid_openfiles(self, pid):
 		""" List of files that the process has open """
-		self.writeCommand('pid_openfiles')
+		self.writeCommand('pid_openfiles', pid)
 
-	def pid_parent(self):
+	def pid_parent(self, pid):
 		""" The pid of the parent of the process """
-		self.writeCommand('pid_parent')
+		self.writeCommand('pid_parent', pid)
 
-	def pid_priority(self):
+	def pid_priority(self, pid):
 		""" The priority of the process (see 'priority' in "man 5 proc") """
-		self.writeCommand('pid_priority')
+		self.writeCommand('pid_priority', pid)
 
-	def pid_read(self):
+	def pid_read(self, pid):
 		""" Total number of bytes read by the process """
-		self.writeCommand('pid_read')
+		self.writeCommand('pid_read', pid)
 
-	def pid_state(self):
+	def pid_state(self, pid):
 		""" State of the process """
-		self.writeCommand('pid_state')
+		self.writeCommand('pid_state', pid)
 
-	def pid_state_short(self):
+	def pid_state_short(self, pid):
 		""" One of the chars in "RSDZTW" representing the state of the process where R is running, S is sleeping in an interruptible wait, D is waiting in uninterruptible disk sleep, Z is zombie, T is traced or stopped (on a signal), and W is paging """
-		self.writeCommand('pid_state_short')
+		self.writeCommand('pid_state_short', pid)
 
-	def pid_stderr(self):
+	def pid_stderr(self, pid):
 		""" Filedescriptor binded to the STDERR of the process """
-		self.writeCommand('pid_stderr')
+		self.writeCommand('pid_stderr', pid)
 
-	def pid_stdin(self):
+	def pid_stdin(self, pid):
 		""" Filedescriptor binded to the STDIN of the process """
-		self.writeCommand('pid_stdin')
+		self.writeCommand('pid_stdin', pid)
 
-	def pid_stdout(self):
+	def pid_stdout(self, pid):
 		""" Filedescriptor binded to the STDOUT of the process """
-		self.writeCommand('pid_stdout')
+		self.writeCommand('pid_stdout', pid)
 
-	def pid_threads(self):
+	def pid_threads(self, pid):
 		""" Number of threads in process containing this thread """
-		self.writeCommand('pid_threads')
+		self.writeCommand('pid_threads', pid)
 
-	def pid_thread_list(self):
+	def pid_thread_list(self, pid):
 		""" List with pid's from threads from this process """
-		self.writeCommand('pid_thread_list')
+		self.writeCommand('pid_thread_list', pid)
 
-	def pid_time_kernelmode(self):
+	def pid_time_kernelmode(self, pid):
 		""" Amount of time that the process has been scheduled in kernel mode in seconds """
-		self.writeCommand('pid_time_kernelmode')
+		self.writeCommand('pid_time_kernelmode', pid)
 
-	def pid_time_usermode(self):
+	def pid_time_usermode(self, pid):
 		""" Amount of time that the process has been scheduled in user mode in seconds """
-		self.writeCommand('pid_time_usermode')
+		self.writeCommand('pid_time_usermode', pid)
 
-	def pid_time(self):
+	def pid_time(self, pid):
 		""" Sum of $pid_time_kernelmode and $pid_time_usermode """
-		self.writeCommand('pid_time')
+		self.writeCommand('pid_time', pid)
 
-	def pid_uid(self):
+	def pid_uid(self, pid):
 		""" The real uid of the process """
-		self.writeCommand('pid_uid')
+		self.writeCommand('pid_uid', pid)
 
-	def pid_euid(self):
+	def pid_euid(self, pid):
 		""" The effective uid of the process """
-		self.writeCommand('pid_euid')
+		self.writeCommand('pid_euid', pid)
 
-	def pid_suid(self):
+	def pid_suid(self, pid):
 		""" The saved set uid of the process """
-		self.writeCommand('pid_suid')
+		self.writeCommand('pid_suid', pid)
 
-	def pid_fsuid(self):
+	def pid_fsuid(self, pid):
 		""" The file system uid of the process """
-		self.writeCommand('pid_fsuid')
+		self.writeCommand('pid_fsuid', pid)
 
-	def pid_gid(self):
+	def pid_gid(self, pid):
 		""" The real gid of the process """
-		self.writeCommand('pid_gid')
+		self.writeCommand('pid_gid', pid)
 
-	def pid_egid(self):
+	def pid_egid(self, pid):
 		""" The effective gid of the process """
-		self.writeCommand('pid_egid')
+		self.writeCommand('pid_egid', pid)
 
-	def pid_sgid(self):
+	def pid_sgid(self, pid):
 		""" The saved set gid of the process """
-		self.writeCommand('pid_sgid')
+		self.writeCommand('pid_sgid', pid)
 
-	def pid_fsgid(self):
+	def pid_fsgid(self, pid):
 		""" The file system gid of the process """
-		self.writeCommand('pid_fsgid')
+		self.writeCommand('pid_fsgid', pid)
 
-	def pid_vmpeak(self):
+	def pid_vmpeak(self, pid):
 		""" Peak virtual memory size of the process """
-		self.writeCommand('pid_vmpeak')
+		self.writeCommand('pid_vmpeak', pid)
 
-	def pid_vmsize(self):
+	def pid_vmsize(self, pid):
 		""" Virtual memory size of the process """
-		self.writeCommand('pid_vmsize')
+		self.writeCommand('pid_vmsize', pid)
 
-	def pid_vmlck(self):
+	def pid_vmlck(self, pid):
 		""" Locked memory size of the process """
-		self.writeCommand('pid_vmlck')
+		self.writeCommand('pid_vmlck', pid)
 
-	def pid_vmhwm(self):
+	def pid_vmhwm(self, pid):
 		""" Peak resident set size ("high water mark") of the process """
-		self.writeCommand('pid_vmhwm')
+		self.writeCommand('pid_vmhwm', pid)
 
-	def pid_vmrss(self):
+	def pid_vmrss(self, pid):
 		""" Resident set size of the process """
-		self.writeCommand('pid_vmrss')
+		self.writeCommand('pid_vmrss', pid)
 
-	def pid_vmdata(self):
+	def pid_vmdata(self, pid):
 		""" Data segment size of the process """
-		self.writeCommand('pid_vmdata')
+		self.writeCommand('pid_vmdata', pid)
 
-	def pid_vmstk(self):
+	def pid_vmstk(self, pid):
 		""" Stack segment size of the process """
-		self.writeCommand('pid_vmstk')
+		self.writeCommand('pid_vmstk', pid)
 
-	def pid_vmexe(self):
+	def pid_vmexe(self, pid):
 		""" Text segment size of the process """
-		self.writeCommand('pid_vmexe')
+		self.writeCommand('pid_vmexe', pid)
 
-	def pid_vmlib(self):
+	def pid_vmlib(self, pid):
 		""" Shared library code size of the process """
-		self.writeCommand('pid_vmlib')
+		self.writeCommand('pid_vmlib', pid)
 
-	def pid_vmpte(self):
+	def pid_vmpte(self, pid):
 		""" Page table entries size of the process """
-		self.writeCommand('pid_vmpte')
+		self.writeCommand('pid_vmpte', pid)
 
-	def pid_write(self):
+	def pid_write(self, pid):
 		""" Total number of bytes written by the process """
-		self.writeCommand('pid_write')
+		self.writeCommand('pid_write', pid)
 
-	def platform(self):
+	def platform(self, type, n, dev=None):
 		""" Platform sensor from sysfs (Linux 2.6). Parameter dev may be omitted if you have only one platform device. Platform type is either 'in' or 'vol' meaning voltage; 'fan' meaning fan; 'temp' meaning temperature. Parameter n is number of the sensor. See /sys/bus/platform/devices/ on your local computer. The optional arguments 'factor' and 'offset' allow precalculation of the raw input, which is being modified as follows: 'input = input * factor + offset'. Note that they have to be given as decimal values (i.e. contain at least one decimal place). """
 		self.writeCommand('platform')
 
-	def pop3_unseen(self):
+	def pop3_unseen(self, args=None):
 		""" Displays the number of unseen messages in your global POP3 inbox by default. You can define individual POP3 inboxes separately by passing arguments to this object. Arguments are: "host user pass [-i interval (in seconds)] [-p port] [-e 'command'] [-r retries]". Default port is 110, default interval is 5 minutes, and default number of retries before giving up is 5. If the password is supplied as '*', you will be prompted to enter the password when Conky starts. """
-		self.writeCommand('pop3_unseen')
+		self.writeCommand('pop3_unseen', args)
 
-	def pop3_used(self):
+	def pop3_used(self, args=None):
 		""" Displays the amount of space (in MiB, 2^20) used in your global POP3 inbox by default. You can define individual POP3 inboxes separately by passing arguments to this object. Arguments are: "host user pass [-i interval (in seconds)] [-p port] [-e 'command'] [-r retries]". Default port is 110, default interval is 5 minutes, and default number of retries before giving up is 5. If the password is supplied as '*', you will be prompted to enter the password when Conky starts. """
-		self.writeCommand('pop3_used')
+		self.writeCommand('pop3_used', args)
 
-	def pre_exec(self):
+	def pre_exec(self, shell, command):
 		""" Executes a shell command one time before conky displays anything and puts output as text. """
-		self.writeCommand('pre_exec')
+		self.writeCommand('pre_exec', [shell, command])
 
 	def processes(self):
 		""" Total processes (sleeping and running) """
 		self.writeCommand('processes')
 
-	def read_tcp(self):
+	def read_tcp(self, port, host=None):
 		""" Connects to a tcp port on a host (default is localhost), reads every char available at the moment and shows them. """
-		self.writeCommand('read_tcp')
+		self.writeCommand('read_tcp', [host, port])
 
-	def replied_mails(self):
+	def replied_mails(self, maildir=None):
 		""" Number of mails marked as replied in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
-		self.writeCommand('replied_mails')
+		self.writeCommand('replied_mails', maildir)
 
-	def rss(self):
+	def rss(self, uri, interval, action):
 		""" Download and parse RSS feeds. The interval may be a floating point value greater than 0, otherwise defaults to 15 minutes. Action may be one of the following: feed_title, item_title (with num par), item_desc (with num par) and item_titles (when using this action and spaces_in_front is given conky places that many spaces in front of each item). This object is threaded, and once a thread is created it can't be explicitly destroyed. One thread will run for each URI specified. You can use any protocol that Curl supports. """
 		self.writeCommand('rss')
 
@@ -1151,53 +1178,53 @@ class ConkyWriter:
 		""" Number of running (runnable) threads. Linux only. """
 		self.writeCommand('running_threads')
 
-	def scroll(self):
+	def scroll(self, length, text, step=None):
 		""" Scroll 'text' by 'step' characters showing 'length' number of characters at the same time. The text may also contain variables. 'step' is optional and defaults to 1 if not set. If a var creates output on multiple lines then the lines are placed behind each other separated with a '|'-sign. If you change the textcolor inside $scroll it will automatically have it's old value back at the end of $scroll. The end and the start of text will be separated by 'length' number of spaces. """
-		self.writeCommand('scroll')
+		self.writeCommand('scroll', [length, step, text])
 
-	def seen_mails(self):
+	def seen_mails(self, maildir=None):
 		""" Number of mails marked as seen in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
-		self.writeCommand('seen_mails')
+		self.writeCommand('seen_mails', maildir)
 
-	def shadecolor(self):
+	def shadecolor(self, color=None):
 		""" Change shading color """
-		self.writeCommand('shadecolor')
+		self.writeCommand('shadecolor', color)
 
-	def smapi(self):
+	def smapi(self, args=None):
 		""" when using smapi, display contents of the /sys/devices/platform/smapi directory. ARGS are either '(FILENAME)' or 'bat (INDEX) (FILENAME)' to display the corresponding files' content. This is a very raw method of accessing the smapi values. When available, better use one of the smapi_* variables instead. """
-		self.writeCommand('smapi')
+		self.writeCommand('smapi', args)
 
 	def smapi_bat_bar(self):
 		""" when using smapi, display the remaining capacity of the battery with index INDEX as a bar. """
 		self.writeCommand('smapi_bat_bar')
 
-	def smapi_bat_perc(self):
+	def smapi_bat_perc(self, index=None):
 		""" when using smapi, display the remaining capacity in percent of the battery with index INDEX. This is a separate variable because it supports the 'use_spacer' configuration option. """
-		self.writeCommand('smapi_bat_perc')
+		self.writeCommand('smapi_bat_perc', index)
 
-	def smapi_bat_power(self):
+	def smapi_bat_power(self, index):
 		""" when using smapi, display the current power of the battery with index INDEX in watt. This is a separate variable because the original read out value is being converted from mW. The sign of the output reflects charging (positive) or discharging (negative) state. """
-		self.writeCommand('smapi_bat_power')
+		self.writeCommand('smapi_bat_power', index)
 
-	def smapi_bat_temp(self):
+	def smapi_bat_temp(self, index):
 		""" when using smapi, display the current temperature of the battery with index INDEX in degree Celsius. This is a separate variable because the original read out value is being converted from milli degree Celsius. """
-		self.writeCommand('smapi_bat_temp')
+		self.writeCommand('smapi_bat_temp', index)
 
 	def sony_fanspeed(self):
 		""" Displays the Sony VAIO fanspeed information if sony-laptop kernel support is enabled. Linux only. """
 		self.writeCommand('sony_fanspeed')
 
-	def stippled_hr(self):
+	def stippled_hr(self, space=None):
 		""" Stippled (dashed) horizontal line """
-		self.writeCommand('stippled_hr')
+		self.writeCommand('stippled_hr', space)
 
 	def swap(self):
 		""" Amount of swap in use """
 		self.writeCommand('swap')
 
-	def swapbar(self):
+	def swapbar(self, size=None):
 		""" Bar that shows amount of swap in use """
-		self.writeCommand('swapbar')
+		self.writeCommand('swapbar', size)
 
 	def swapfree(self):
 		""" Amount of free swap """
@@ -1215,109 +1242,114 @@ class ConkyWriter:
 		""" System name, Linux for example """
 		self.writeCommand('sysname')
 
-	def tab(self):
+	def tab(self, size=None):
 		""" Puts a tab of the specified width, starting from column 'start'. The unit is pixels for both arguments. """
-		self.writeCommand('tab')
+		self.writeCommand('tab', size)
 
-	def tail(self):
+	def tail(self, logfile, lines, next_check=None):
 		""" Displays last N lines of supplied text file. The file is checked every 'next_check' update. If next_check is not supplied, Conky defaults to 2. Max of 30 lines can be displayed, or until the text buffer is filled. """
-		self.writeCommand('tail')
+		self.writeCommand('tail', [logfile, lines, next_check])
 
-	def tcp_portmon(self):
+	def tcp_portmon(self, port_begin, port_end, item, index=None):
 		""" TCP port (both IPv6 and IPv4) monitor for specified local ports. Port numbers must be in the range 1 to 65535. Valid items are:count - Total number of connections in the range rip - Remote ip address rhost - Remote host name rport - Remote port number rservice - Remote service name from /etc/services lip - Local ip address lhost - Local host name lport - Local port number lservice - Local service name from /etc/services The connection index provides you with access to each connection in the port monitor. The monitor will return information for index values from 0 to n-1 connections. Values higher than n-1 are simply ignored. For the "count" item, the connection index must be omitted. It is required for all other items.Examples:${tcp_portmon 6881 6999 count} - Displays the number of connections in the bittorrent port range ${tcp_portmon 22 22 rip 0} - Displays the remote host ip of the first sshd connection ${tcp_portmon 22 22 rip 9} - Displays the remote host ip of the tenth sshd connection ${tcp_portmon 1 1024 rhost 0} - Displays the remote host name of the first connection on a privileged port ${tcp_portmon 1 1024 rport 4} - Displays the remote host port of the fifth connection on a privileged port ${tcp_portmon 1 65535 lservice 14} - Displays the local service name of the fifteenth connection in the range of all ports Note that port monitor variables which share the same port range actually refer to the same monitor, so many references to a single port range for different items and different indexes all use the same monitor internally. In other words, the program avoids creating redundant monitors. """
-		self.writeCommand('tcp_portmon')
+		self.writeCommand('tcp_portmon', [port_begin, port_end, item, index])
 
-	def templateN(self):
+	def templateN(self, arg1=None):
 		""" Evaluate the content of the templateN configuration variable (where N is a value between 0 and 9, inclusively), applying substitutions as described in the documentation of the corresponding configuration variable. The number of arguments is optional, but must match the highest referred index in the template. You can use the same special sequences in each argument as the ones valid for a template definition, e.g. to allow an argument to contain a whitespace. Also simple nesting of templates is possible this way.Here are some examples of template definitions:template0 $\1\2template1 \1: ${fs_used \2} / ${fs_size \2}template2 \1 \2The following list shows sample usage of the templates defined above, with the equivalent syntax when not using any template at all: using template same without template ${template0 node name} $nodename ${template1 root /} root: ${fs_free /} / ${fs_size /} ${template1 ${template2\ disk\ root} /} disk root: ${fs_free /} / ${fs_size /} """
-		self.writeCommand('templateN')
+		self.writeCommand('templateN', arg1)
 
-	def texeci(self):
+	def texeci(self, interval, command):
 		""" Runs a command at an interval inside a thread and displays the output. Same as $execi, except the command is run inside a thread. Use this if you have a slow script to keep Conky updating. You should make the interval slightly longer then the time it takes your script to execute. For example, if you have a script that take 5 seconds to execute, you should make the interval at least 6 seconds. See also $execi. This object will clean up the thread when it is destroyed, so it can safely be used in a nested fashion, though it may not produce the desired behaviour if used this way. """
-		self.writeCommand('texeci')
+		self.writeCommand('texeci', [interval, command])
 
 	def threads(self):
 		""" Total threads """
 		self.writeCommand('threads')
 
-	def time(self):
+	def time(self, format=None):
 		""" Local time, see man strftime to get more information about format """
-		self.writeCommand('time')
+		self.writeCommand('time', format)
 
-	def to_bytes(self):
+	def to_bytes(self, size):
 		""" If 'size' is a number followed by a size-unit (kilobyte,mb,GiB,...) then it converts the size to bytes and shows it without unit, otherwise it just shows 'size'. """
-		self.writeCommand('to_bytes')
+		self.writeCommand('to_bytes', size)
 
-	def top(self):
+	def top(self, type, num):
 		""" This takes arguments in the form:top (name) (number) Basically, processes are ranked from highest to lowest in terms of cpu usage, which is what (num) represents. The types are: "name", "pid", "cpu", "mem", "mem_res", "mem_vsize", "time", "uid", "user", "io_perc", "io_read" and "io_write". There can be a max of 10 processes listed. """
-		self.writeCommand('top')
+		self.writeCommand('top', [type, num])
 
-	def top_io(self):
+	def top_io(self, type, num):
 		""" Same as top, except sorted by the amount of I/O the process has done during the update interval """
-		self.writeCommand('top_io')
+		self.writeCommand('top_io', [type, num])
 
-	def top_mem(self):
+	def top_mem(self, type, num):
 		""" Same as top, except sorted by mem usage instead of cpu """
-		self.writeCommand('top_mem')
+		self.writeCommand('top_mem', [type, num])
 
-	def top_time(self):
+	def top_time(self, type, num):
 		""" Same as top, except sorted by total CPU time instead of current CPU usage """
-		self.writeCommand('top_time')
+		self.writeCommand('top_time', [type, num])
 
-	def totaldown(self):
+	def totaldown(self, net=None):
 		""" Total download, overflows at 4 GB on Linux with 32-bit arch and there doesn't seem to be a way to know how many times it has already done that before conky has started. """
-		self.writeCommand('totaldown')
+		self.writeCommand('totaldown', net)
 
-	def totalup(self):
+	def totalup(self, net=None):
 		""" Total upload, this one too, may overflow """
-		self.writeCommand('totalup')
+		self.writeCommand('totalup', net)
 
-	def trashed_mails(self):
+	def trashed_mails(self, maildir=None):
 		""" Number of mails marked as trashed in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
-		self.writeCommand('trashed_mails')
+		self.writeCommand('trashed_mails', maildir)
 
 	def tztime(self):
 		""" Local time for specified timezone, see man strftime to get more information about format. The timezone argument is specified in similar fashion as TZ environment variable. For hints, look in /usr/share/zoneinfo. e.g. US/Pacific, Europe/Zurich, etc. """
 		self.writeCommand('tztime')
 
-	def gid_name(self):
+	def gid_name(self, gid):
 		""" Name of group with this gid """
-		self.writeCommand('gid_name')
+		self.writeCommand('gid_name', gid)
 
-	def uid_name(self):
+	def uid_name(self, uid):
 		""" Username of user with this uid """
-		self.writeCommand('uid_name')
+		self.writeCommand('uid_name', uid)
 
-	def unflagged_mails(self):
+	def unflagged_mails(self, maildir=None):
 		""" Number of mails not marked as flagged in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
-		self.writeCommand('unflagged_mails')
+		self.writeCommand('unflagged_mails', maildir)
 
-	def unforwarded_mails(self):
+	def unforwarded_mails(self, maildir=None):
 		""" Number of mails not marked as forwarded in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
-		self.writeCommand('unforwarded_mails')
+		self.writeCommand('unforwarded_mails', maildir)
 
-	def unreplied_mails(self):
+	def unreplied_mails(self, maildir=None):
 		""" Number of mails not marked as replied in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
-		self.writeCommand('unreplied_mails')
+		self.writeCommand('unreplied_mails', maildir)
 
-	def unseen_mails(self):
+	def unseen_mails(self, maildir=None):
 		""" Number of new or unseen mails in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
-		self.writeCommand('unseen_mails')
+		self.writeCommand('unseen_mails', maildir)
 
-	def updates(self):
+	def updates(self, n):
 		""" for debugging """
-		self.writeCommand('updates')
+		self.writeCommand('updates', n)
 
-	def upspeed(self):
+	def upspeed(self, net=None):
 		""" Upload speed in suitable IEC units """
-		self.writeCommand('upspeed')
+		self.writeCommand('upspeed', net)
 
-	def upspeedf(self):
+	def upspeedf(self, net=None):
 		""" Upload speed in KiB with one decimal """
-		self.writeCommand('upspeedf')
+		self.writeCommand('upspeedf', net)
 
-	def upspeedgraph(self):
+	def upspeedgraph(self, netdev=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
 		""" Upload speed graph, colours defined in hex, minus the #. If scale is non-zero, it becomes the scale for the graph. Uses a logarithmic scale (to see small numbers) when you use the -l switch. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). """
-		self.writeCommand('upspeedgraph')
+        parameters = [netdev, size, gradientColor1, gradientColor2, scale]
+        if t:
+            parameters.append('-t')
+        if l:
+            parameters.append('-l')
+		self.writeCommand('upspeedgraph', parameters)
 
 	def uptime(self):
 		""" Uptime """
@@ -1343,69 +1375,69 @@ class ConkyWriter:
 		""" Lists how long users have been logged in for """
 		self.writeCommand('user_times')
 
-	def user_time(self):
+	def user_time(self, console):
 		""" Lists how long the user for the given console has been logged in for """
-		self.writeCommand('user_time')
+		self.writeCommand('user_time', console)
 
-	def utime(self):
+	def utime(self, format=None):
 		""" Display time in UTC (universal coordinate time). """
-		self.writeCommand('utime')
+		self.writeCommand('utime', format)
 
-	def voffset(self):
+	def voffset(self, pixels=None):
 		""" Change vertical offset by N pixels. Negative values will cause text to overlap. See also $offset. """
-		self.writeCommand('voffset')
+		self.writeCommand('voffset', pixels)
 
-	def voltage_mv(self):
+	def voltage_mv(self, n=None):
 		""" Returns CPU #n's voltage in mV. CPUs are counted from 1. If omitted, the parameter defaults to 1. """
-		self.writeCommand('voltage_mv')
+		self.writeCommand('voltage_mv', n)
 
-	def voltage_v(self):
+	def voltage_v(self, n=None):
 		""" Returns CPU #n's voltage in V. CPUs are counted from 1. If omitted, the parameter defaults to 1. """
-		self.writeCommand('voltage_v')
+		self.writeCommand('voltage_v', n)
 
-	def weather(self):
+	def weather(self, uri, locid, data_type, interval=None):
 		""" Download, parse and display METAR data.For the 'URI', there are two possibilities: http://weather.noaa.gov/pub/data/observations/metar/stations/ http://xoap.weather.com/weather/local/The first one is free to use but the second requires you to register and obtain your partner ID and license key. These two must be written, separated by a space, into a file called .xoaprc which needs to be placed into your home directory.'locID' must be a valid location identifier for the required uri. For the NOAA site this must be a valid ICAO (see for instance https://pilotweb.nas.faa.gov/qryhtml/icao/). For the weather.com site this must be a valid location ID (see for instance http://aspnetresources.com/tools/locid.aspx).'data_type' must be one of the following:last_update - The date and time stamp of the data. The result depends on the URI used. For the NOAA site it is date (yyyy/mm/dd) and UTC time. For the weather.com one it is date ([m]m/[d]d/yy) and Local Time of the station.temperature - Air temperature (you can use the 'temperature_unit' config setting to change units)cloud_cover - The highest cloud cover statuspressure - Air pressure in millibarwind_speed - Wind speed in km/hwind_dir - Wind directionwind_dir_DEG - Compass wind directionhumidity - Relative humidity in %weather - Any relevant weather event (rain, snow, etc.). This is not used if you are querying the weather.com site since this data is aggregated into the cloud_cover oneicon - Weather icon (only for www.weather.com). Can be used together with the icon kit provided upon registering to their service.'delay_in_minutes' (optional, default 30) cannot be less than 30 minutes.This object is threaded, and once a thread is created it can't be explicitly destroyed. One thread will run for each URI specified.Note that these variables are still EXPERIMENTAL and can be subject to many future changes. """
-		self.writeCommand('weather')
+		self.writeCommand('weather', [uri, locid, data_type, interval])
 
-	def weather_forecast(self):
+	def weather_forecast(self, uri, locid, day, data_type, interval=None):
 		""" Download, parse and display weather forecast data for a given day (daytime only).For the 'URI', for the time being only http://xoap.weather.com/weather/local/ is supported. See 'weather' above for details of usage'locID', see 'weather' above.'day' is a number from 0 (today) to 4 (3 days after tomorrow).'data_type' must be one of the following:day - Day of the week date - Date, in the form MMM DD (ie. Jul 14) low - Minimun temperature (you can use the 'temperature_unit' config setting to change units) hi - Maximum temperature (you can use the 'temperature_unit' config setting to change units) icon - Weather icon. Can be used together with the icon kit provided upon registering to the weather.com service forecast - Weather forecast (sunny, rainy, etc.) wind_speed - Wind speed in km/h wind_dir - Wind direction wind_dir_DEG - Compass wind direction humidity - Relative humidity in % precipitation - Probability of having a precipitation (in %) 'delay_in_minutes' (optional, default 210) cannot be lower than 210 min.This object is threaded, and once a thread is created it can't be explicitly destroyed. One thread will run for each URI specified. You can use any protocol that Curl supports.Note that these variables are still EXPERIMENTAL and can be subject to many future changes. """
-		self.writeCommand('weather_forecast')
+		self.writeCommand('weather_forecast', [uri, locid, day, data_type, interval])
 
-	def wireless_ap(self):
+	def wireless_ap(self, net=None):
 		""" Wireless access point MAC address (Linux only) """
-		self.writeCommand('wireless_ap')
+		self.writeCommand('wireless_ap', net)
 
-	def wireless_bitrate(self):
+	def wireless_bitrate(self, net=None):
 		""" Wireless bitrate (ie 11 Mb/s) (Linux only) """
-		self.writeCommand('wireless_bitrate')
+		self.writeCommand('wireless_bitrate', net)
 
-	def wireless_essid(self):
+	def wireless_essid(self, net=None):
 		""" Wireless access point ESSID (Linux only) """
-		self.writeCommand('wireless_essid')
+		self.writeCommand('wireless_essid', net)
 
-	def wireless_link_bar(self):
+	def wireless_link_bar(self, size=None, net=None):
 		""" Wireless link quality bar (Linux only) """
-		self.writeCommand('wireless_link_bar')
+		self.writeCommand('wireless_link_bar', [size, net])
 
-	def wireless_link_qual(self):
+	def wireless_link_qual(self, net=None):
 		""" Wireless link quality (Linux only) """
-		self.writeCommand('wireless_link_qual')
+		self.writeCommand('wireless_link_qual', net)
 
-	def wireless_link_qual_max(self):
+	def wireless_link_qual_max(self, net=None):
 		""" Wireless link quality maximum value (Linux only) """
-		self.writeCommand('wireless_link_qual_max')
+		self.writeCommand('wireless_link_qual_max', net)
 
-	def wireless_link_qual_perc(self):
+	def wireless_link_qual_perc(self, net=None):
 		""" Wireless link quality in percents (Linux only) """
-		self.writeCommand('wireless_link_qual_perc')
+		self.writeCommand('wireless_link_qual_perc', net)
 
-	def wireless_mode(self):
+	def wireless_mode(self, net=None):
 		""" Wireless mode (Managed/Ad-Hoc/Master) (Linux only) """
-		self.writeCommand('wireless_mode')
+		self.writeCommand('wireless_mode', net)
 
-	def words(self):
+	def words(self, textfile):
 		""" Displays the number of words in the given file """
-		self.writeCommand('words')
+		self.writeCommand('words', textfile)
 
 	def xmms2_album(self):
 		""" Album in current XMMS2 song """
@@ -1415,9 +1447,9 @@ class ConkyWriter:
 		""" Artist in current XMMS2 song """
 		self.writeCommand('xmms2_artist')
 
-	def xmms2_bar(self):
+	def xmms2_bar(self, size=None):
 		""" Bar of XMMS2's progress """
-		self.writeCommand('xmms2_bar')
+		self.writeCommand('xmms2_bar', size)
 
 	def xmms2_bitrate(self):
 		""" Bitrate of current song """
