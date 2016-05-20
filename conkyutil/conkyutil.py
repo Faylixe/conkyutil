@@ -262,13 +262,14 @@ class ConkyWriter:
 		""" PID of the first process that has string in it's commandline """
 		self.writeCommand('cmdline_to_pid', search)
 
-	def color(self, color):
+	def color(self, color=None):
 		""" Change drawing color to 'color' which is a name of a color or a hexcode preceded with # (for example #0A1B2C ). If you use ncurses only the following colors are supported: red,green,yellow,blue,magenta,cyan,black,white. """
 		self.writeCommand('color', color)
 
-	def colorN(self):
+	def colorN(self, n):
 		""" Change drawing color to colorN configuration option, where N is a digit between 0 and 9, inclusively. """
-		self.writeCommand('colorN')
+        # TODO : Check if between 0 and 9
+		self.writeCommand('color%d' % n)
 
 	def combine(self, var1, var2):
 		""" Places the lines of var2 to the right of the lines of var1 separated by the chars that are put between var1 and var2. For example: ${combine ${head /proc/cpuinfo 2} - ${head /proc/meminfo 1}} gives as output "cpuinfo_line1 - meminfo_line1" on line 1 and "cpuinfo_line2 -" on line 2. $combine vars can also be nested to place more vars next to each other. """
