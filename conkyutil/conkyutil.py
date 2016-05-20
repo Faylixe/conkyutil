@@ -21,10 +21,21 @@ class ConkyWriter:
         if type(parameters) is list:
             for parameter in parameters:
                 if parameter != None:
-                    arguments += parameter + ' '
-                    # TODO : remove leading space.
+                    if type(parameter) is tuple:
+                        for parameter in parameters
+                            if parameter == None:
+                                raise IOError('Can not write None value from tuple')
+                            arguments += parameter + ', '
+                        # TODO : Remove leading ', ''
+                    else:
+                        arguments += parameter + ' '
+            # TODO : remove leading space.
         elif type(parameters) is tuple:
-
+            for parameter in parameters
+                if parameter == None:
+                    raise IOError('Can not write None value from tuple')
+                arguments += parameter + ', '
+            # TODO : Remove leading ', ''
         else:
             arguments = parameters
         self.write('${%s %s}' % (command, arguments))
