@@ -18,11 +18,13 @@ class ConkyWriter:
     def writeCommand(command, parameters):
         """ """
         arguments = ''
-        if type(parameters) is list or type(parameters) is tuple:
+        if type(parameters) is list:
             for parameter in parameters:
                 if parameter != None:
                     arguments += parameter + ' '
                     # TODO : remove leading space.
+        elif type(parameters) is tuple:
+
         else:
             arguments = parameters
         self.write('${%s %s}' % (command, arguments))
@@ -63,131 +65,136 @@ class ConkyWriter:
 		""" Right-justify text, with space of N """
 		self.writeCommand('alignr', num)
 
-	def apcupsd(self):
+	def apcupsd(self, host):
 		""" Sets up the connection to apcupsd daemon. Prints nothing, defaults to localhost:3551 """
-		self.writeCommand('apcupsd')
+		self.writeCommand('apcupsd', host)
 
-	def apcupsdCable(self):
+	def apcupsd_cable(self):
 		""" Prints the UPS connection type. """
 		self.writeCommand('apcupsd_cable')
 
-	def apcupsdCharge(self):
+	def apcupsd_charge(self):
 		""" Current battery capacity in percent. """
 		self.writeCommand('apcupsd_charge')
 
-	def apcupsdLastxfer(self):
+	def apcupsd_lastxfer(self):
 		""" Reason for last transfer from line to battery. """
 		self.writeCommand('apcupsd_lastxfer')
 
-	def apcupsdLinev(self):
+	def apcupsd_linev(self):
 		""" Nominal input voltage. """
 		self.writeCommand('apcupsd_linev')
 
-	def apcupsdLoad(self):
+	def apcupsd_load(self):
 		""" Current load in percent. """
 		self.writeCommand('apcupsd_load')
 
-	def apcupsdLoadbar(self):
+	def apcupsd_loadbar(self):
 		""" Bar showing current load. """
 		self.writeCommand('apcupsd_loadbar')
 
-	def apcupsdLoadgauge(self, size=None, width=None):
-		""" Gauge that shows current load. """
-		self.writeCommand('apcupsd_loadgauge', (height, width))
+	def apcupsd_loadgauge(self, size=None):
+		""" Gauge that shows current load. Size parameter should be a tuple (height, width) """
+		self.writeCommand('apcupsd_loadgauge', size)
 
-	def apcupsdLoadgraph(self):
+	def apcupsd_loadgraph(self, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
 		""" History graph of current load. """
-		self.writeCommand('apcupsd_loadgraph')
+        parameters = [size, gradientColor1, gradientColor2, scale]
+        if t:
+            parameters.append('-t')
+        if l:
+            parameters.append('-l')
+		self.writeCommand('apcupsd_loadgraph', parameters)
 
-	def apcupsdModel(self):
+	def apcupsd_model(self):
 		""" Prints the model of the UPS. """
 		self.writeCommand('apcupsd_model')
 
-	def apcupsdName(self):
+	def apcupsd_name(self):
 		""" Prints the UPS user-defined name. """
 		self.writeCommand('apcupsd_name')
 
-	def apcupsdStatus(self):
+	def apcupsd_status(self):
 		""" Prints current status (on-line, on-battery). """
 		self.writeCommand('apcupsd_status')
 
-	def apcupsdTemp(self):
+	def apcupsd_temp(self):
 		""" Current internal temperature. """
 		self.writeCommand('apcupsd_temp')
 
-	def apcupsdTimeleft(self):
+	def apcupsd_timeleft(self):
 		""" Time left to run on battery. """
 		self.writeCommand('apcupsd_timeleft')
 
-	def apcupsdUpsmode(self):
+	def apcupsd_upsmode(self):
 		""" Prints the UPS mode (e.g. standalone). """
 		self.writeCommand('apcupsd_upsmode')
 
-	def apmAdapter(self):
+	def apm_adapter(self):
 		""" Display APM AC adapter status (FreeBSD only) """
 		self.writeCommand('apm_adapter')
 
-	def apmBatteryLife(self):
+	def apm_battery_life(self):
 		""" Display APM battery life in percent (FreeBSD only) """
 		self.writeCommand('apm_battery_life')
 
-	def apmBatteryTime(self):
+	def apm_battery_time(self):
 		""" Display remaining APM battery life in hh:mm:ss or "unknown" if AC adapterstatus is on-line or charging (FreeBSD only) """
 		self.writeCommand('apm_battery_time')
 
-	def audaciousBar(self):
+	def audacious_bar(self, size=None):
 		""" Progress bar """
-		self.writeCommand('audacious_bar')
+		self.writeCommand('audacious_bar', size)
 
-	def audaciousBitrate(self):
+	def audacious_bitrate(self):
 		""" Bitrate of current tune """
 		self.writeCommand('audacious_bitrate')
 
-	def audaciousChannels(self):
+	def audacious_channels(self):
 		""" Number of audio channels of current tune """
 		self.writeCommand('audacious_channels')
 
-	def audaciousFilename(self):
+	def audacious_filename(self):
 		""" Full path and filename of current tune """
 		self.writeCommand('audacious_filename')
 
-	def audaciousFrequency(self):
+	def audacious_frequency(self):
 		""" Sampling frequency of current tune """
 		self.writeCommand('audacious_frequency')
 
-	def audaciousLength(self):
+	def audacious_length(self):
 		""" Total length of current tune as MM:SS """
 		self.writeCommand('audacious_length')
 
-	def audaciousLengthSeconds(self):
+	def audacious_length_seconds(self):
 		""" Total length of current tune in seconds """
 		self.writeCommand('audacious_length_seconds')
 
-	def audaciousMainVolume(self):
+	def audacious_main_volume(self):
 		""" The current volume fetched from Audacious """
 		self.writeCommand('audacious_main_volume')
 
-	def audaciousPlaylistLength(self):
+	def audacious_playlist_length(self):
 		""" Number of tunes in playlist """
 		self.writeCommand('audacious_playlist_length')
 
-	def audaciousPlaylistPosition(self):
+	def audacious_playlist_position(self):
 		""" Playlist position of current tune """
 		self.writeCommand('audacious_playlist_position')
 
-	def audaciousPosition(self):
+	def audacious_position(self):
 		""" Position of current tune (MM:SS) """
 		self.writeCommand('audacious_position')
 
-	def audaciousPositionSeconds(self):
+	def audacious_position_seconds(self):
 		""" Position of current tune in seconds """
 		self.writeCommand('audacious_position_seconds')
 
-	def audaciousStatus(self):
+	def audacious_status(self):
 		""" Player status (Playing/Paused/Stopped/Not running) """
 		self.writeCommand('audacious_status')
 
-	def audaciousTitle(self, maxLength=None):
+	def audacious_title(self, maxLength=None):
 		""" Title of current tune with optional maximum length specifier """
 		self.writeCommand('audacious_title', maxLength)
 
@@ -195,19 +202,19 @@ class ConkyWriter:
 		""" Battery status and remaining percentage capacity of ACPI or APM battery. ACPI battery number can be given as argument (default is BAT0). """
 		self.writeCommand('battery', num)
 
-	def batteryBar(self):
+	def battery_bar(self):
 		""" Battery percentage remaining of ACPI battery in a bar. ACPI battery number can be given as argument (default is BAT0). """
 		self.writeCommand('battery_bar')
 
-	def batteryPercent(self, num=None):
+	def battery_percent(self, num=None):
 		""" Battery percentage remaining for ACPI battery. ACPI battery number can be given as argument (default is BAT0). """
 		self.writeCommand('battery_percent', num)
 
-	def batteryShort(self, num=None):
+	def battery_short(self, num=None):
 		""" Battery status and remaining percentage capacity of ACPI or APM battery. ACPI battery number can be given as argument (default is BAT0). This mode display a short status, which means that C is displayed instead of charging, D for discharging, F for full, N for not present, E for empty and U for unknown. """
 		self.writeCommand('battery_short', num)
 
-	def batteryTime(self, num=None):
+	def battery_time(self, num=None):
 		""" Battery charge/discharge time remaining of ACPI battery. ACPI battery number can be given as argument (default is BAT0). """
 		self.writeCommand('battery_time', num)
 
@@ -219,27 +226,27 @@ class ConkyWriter:
         """ End blinking """
         self.write('}')
 
-	def bmpxAlbum(self):
+	def bmpx_album(self):
 		""" Album in current BMPx track """
 		self.writeCommand('bmpx_album')
 
-	def bmpxArtist(self):
+	def bmpx_artist(self):
 		""" Artist in current BMPx track """
 		self.writeCommand('bmpx_artist')
 
-	def bmpxBitrate(self):
+	def bmpx_bitrate(self):
 		""" Bitrate of the current BMPx track """
 		self.writeCommand('bmpx_bitrate')
 
-	def bmpxTitle(self):
+	def bmpx_title(self):
 		""" Title of the current BMPx track """
 		self.writeCommand('bmpx_title')
 
-	def bmpxTrack(self):
+	def bmpx_track(self):
 		""" Track number of the current BMPx track """
 		self.writeCommand('bmpx_track')
 
-	def bmpxUri(self):
+	def bmpx_uri(self):
 		""" URI of the current BMPx track """
 		self.writeCommand('bmpx_uri')
 
@@ -283,16 +290,21 @@ class ConkyWriter:
 		""" CPU usage in percents. For SMP machines, the CPU number can be provided as an argument. ${cpu cpu0} is the total usage, and ${cpu cpuX} (X >= 1) are individual CPUs. """
 		self.writeCommand('cpu', n)
 
-	def cpubar(self):
+	def cpubar(self, n=None, size=None):
 		""" Bar that shows CPU usage, height is bar's height in pixels. See $cpu for more info on SMP. """
-		self.writeCommand('cpubar')
+		self.writeCommand('cpubar', [n, size])
 
-	def cpugauge(self):
+	def cpugauge(self, n=None, size=None):
 		""" Elliptical gauge that shows CPU usage, height and width are gauge's vertical and horizontal axis respectively. See $cpu for more info on SMP. """
-		self.writeCommand('cpugauge')
+		self.writeCommand('cpugauge', [n, size])
 
-	def cpugraph(self):
+	def cpugraph(self, n=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
 		""" CPU usage graph, with optional colours in hex, minus the #. See $cpu for more info on SMP. Uses a logarithmic scale (to see small numbers) when you use the -l switch. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). """
+        parameters = [n, size, gradientColor1, gradientColor2, scale]
+        if t:
+            parameters.append('-t')
+        if l:
+            parameters.append('-l')
 		self.writeCommand('cpugraph')
 
 	def curl(self, url, interval=None):
@@ -327,16 +339,31 @@ class ConkyWriter:
 		""" Displays current disk IO for writes. Device as in diskio. """
 		self.writeCommand('diskio_write', device)
 
-	def diskiograph(self):
+	def diskiograph(self, device=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
 		""" Disk IO graph, colours defined in hex, minus the #. If scale is non-zero, it becomes the scale for the graph. Uses a logarithmic scale (to see small numbers) when you use -l switch. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). """
-		self.writeCommand('diskiograph')
+        parameters = [device, size, gradientColor1, gradientColor2, scale]
+        if t:
+            parameters.append('-t')
+        if l:
+            parameters.append('-l')
+		self.writeCommand('diskiograph', parameters)
 
-	def diskiograph_read(self):
+	def diskiograph_read(self, device=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
 		""" Disk IO graph for reads, colours defined in hex, minus the #. If scale is non-zero, it becomes the scale for the graph. Device as in diskio. Uses a logarithmic scale (to see small numbers) when you use -l switch. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). """
+        parameters = [device, size, gradientColor1, gradientColor2, scale]
+        if t:
+            parameters.append('-t')
+        if l:
+            parameters.append('-l')
 		self.writeCommand('diskiograph_read')
 
-	def diskiograph_write(self):
+	def diskiograph_write(self, device=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
 		""" Disk IO graph for writes, colours defined in hex, minus the #. If scale is non-zero, it becomes the scale for the graph. Device as in diskio. Uses a logarithmic scale (to see small numbers) when you use -l switch. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). """
+        parameters = [device, size, gradientColor1, gradientColor2, scale]
+        if t:
+            parameters.append('-t')
+        if l:
+            parameters.append('-l')
 		self.writeCommand('diskiograph_write')
 
 	def downspeed(self, net=None):
@@ -347,9 +374,14 @@ class ConkyWriter:
 		""" Download speed in KiB with one decimal """
 		self.writeCommand('downspeedf', net)
 
-	def downspeedgraph(self):
+	def downspeedgraph(self, netdev=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
 		""" Download speed graph, colours defined in hex, minus the #. If scale is non-zero, it becomes the scale for the graph. Uses a logarithmic scale (to see small numbers) when you use -l switch. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). """
-		self.writeCommand('downspeedgraph')
+        parameters = [netdev, size, gradientColor1, gradientColor2, scale]
+        if t:
+            parameters.append('-t')
+        if l:
+            parameters.append('-l')
+		self.writeCommand('downspeedgraph', parameters)
 
 	def draft_mails(self, maildir=None):
 		""" Number of mails marked as draft in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
@@ -367,9 +399,9 @@ class ConkyWriter:
 		""" Current entropy available for crypto freaks """
 		self.writeCommand('entropy_avail')
 
-	def entropy_bar(self):
+	def entropy_bar(self, size=None):
 		""" Normalized bar of available entropy for crypto freaks """
-		self.writeCommand('entropy_bar')
+		self.writeCommand('entropy_bar', size)
 
 	def entropy_perc(self):
 		""" Percentage of entropy available in comparison to the poolsize """
@@ -383,9 +415,9 @@ class ConkyWriter:
 		""" Evaluates given string according to the rules of TEXT interpretation, i.e. parsing any contained text object specifications into their output, any occuring '$$' into a single '$' and so on. The output is then being parsed again. """
 		self.writeCommand('eval', string)
 
-	def eve(self):
+	def eve(self, api_userid, api_key, character_id):
 		""" Fetches your currently training skill from the Eve Online API servers (http://www.eve-online.com/) and displays the skill along with the remaining training time. """
-		self.writeCommand('eve')
+		self.writeCommand('eve', [api_userid, api_key, character_id])
 
 	def execCommand(self, command):
 		""" Executes a shell command and displays the output in conky. warning: this takes a lot more resources than other variables. I'd recommend coding wanted behaviour in C and posting a patch. """
@@ -399,93 +431,105 @@ class ConkyWriter:
 		""" Same as exec, except if the first value returned is a value between 0-100, it will use that number for a gauge. The size for gauges can be controlled via the default_gauge_size config setting. """
 		self.writeCommand('execgauge', command)
 
-	def execgraph(self):
+	def execgraph(self, command, t=False, l=False):
 		""" Same as execbar, but graphs values. Uses a logaritmic scale when the log option (-l switch) is given (to see small numbers). Values still have to be between 0 and 100. The size for graphs can be controlled via the default_graph_size config setting. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). If -t or -l is your first argument, you may need to preceed it by a space (' '). """
-		self.writeCommand('execgraph')
+        parameters = []
+        if t:
+            parameters.append('-t')
+        if l:
+            parameters.append('-l')
+        parameters.append(command)
+		self.writeCommand('execgraph', parameters)
 
-	def execi(self):
+	def execi(self, interval, command):
 		""" Same as exec but with specific interval. Interval can't be less than update_interval in configuration. See also $texeci """
-		self.writeCommand('execi')
+		self.writeCommand('execi', [interval, command])
 
-	def execibar(self):
+	def execibar(self, interval, command):
 		""" Same as execbar, except with an interval """
-		self.writeCommand('execibar')
+		self.writeCommand('execibar', [interval, command])
 
-	def execigauge(self):
+	def execigauge(self, interval, command):
 		""" Same as execgauge, but takes an interval arg and gauges values. """
-		self.writeCommand('execigauge')
+		self.writeCommand('execigauge', [interval, command])
 
-	def execigraph(self):
+	def execigraph(self, interval, command, t=False, l=False):
 		""" Same as execgraph, but takes an interval arg and graphs values. If -t or -l is your first argument, you may need to preceed it by a space (' '). """
-		self.writeCommand('execigraph')
+        parameters = [interval]
+        if t:
+            parameters.append('-t')
+        if l:
+            parameters.append('-l')
+        parameters.append(command)
+		self.writeCommand('execigraph', parameters)
 
-	def execp(self):
+	def execp(self, command):
 		""" Executes a shell command and displays the output in conky. warning: this takes a lot more resources than other variables. I'd recommend coding wanted behaviour in C and posting a patch. This differs from $exec in that it parses the output of the command, so you can insert things like ${color red}hi!${color} in your script and have it correctly parsed by Conky. Caveats: Conky parses and evaluates the output of $execp every time Conky loops, and then destroys all the objects. If you try to use anything like $execi within an $execp statement, it will functionally run at the same interval that the $execp statement runs, as it is created and destroyed at every interval. """
-		self.writeCommand('execp')
+		self.writeCommand('execp', command)
 
-	def execpi(self):
+	def execpi(self, interval, command):
 		""" Same as execp but with specific interval. Interval can't be less than update_interval in configuration. Note that the output from the $execpi command is still parsed and evaluated at every interval. """
-		self.writeCommand('execpi')
+		self.writeCommand('execpi', [interval, command])
 
-	def flagged_mails(self):
+	def flagged_mails(self, maildir=None):
 		""" Number of mails marked as flagged in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
-		self.writeCommand('flagged_mails')
+		self.writeCommand('flagged_mails', maildir)
 
-	def font(self):
+	def font(self, font):
 		""" Specify a different font. This new font will apply to the current line and everything following. You can use a $font with no arguments to change back to the default font (much like with $color) """
 		self.writeCommand('font')
 
-	def format_time(self):
+	def format_time(self, seconds, format):
 		""" Format time given in seconds. This var only works when the times_in_seconds configuration setting is on. Format is a string that should start and end with a "-char. The "-chars are not part of the output, \w,\d,\h,\m,\s,\(,\) and \\ are replaced by weeks,days,hours,minutes,seconds,(,) and \. If you leave out a unit, it's value will be expressed in the highest unite lower then the one left out. Text between ()-chars will not be visible if a replaced unit in this text is 0. If seconds is a decimal number then you can see the numbers behind the point by using \S followed by a number that specifies the amount of digits behind the point that you want to see (maximum 9). You can also place a 'x' behind \S so you have all digits behind the point and no trailing zero's. (also maximum 9) """
-		self.writeCommand('format_time')
+		self.writeCommand('format_time', [seconds, format])
 
-	def forwarded_mails(self):
+	def forwarded_mails(self, maildir=None):
 		""" Number of mails marked as forwarded in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
-		self.writeCommand('forwarded_mails')
+		self.writeCommand('forwarded_mails', maildir)
 
-	def freq(self):
+	def freq(self, n=None):
 		""" Returns CPU #n's frequency in MHz. CPUs are counted from 1. If omitted, the parameter defaults to 1. """
-		self.writeCommand('freq')
+		self.writeCommand('freq', n)
 
-	def freq_g(self):
+	def freq_g(self, n=None):
 		""" Returns CPU #n's frequency in GHz. CPUs are counted from 1. If omitted, the parameter defaults to 1. """
-		self.writeCommand('freq_g')
+		self.writeCommand('freq_g', n)
 
-	def fs_bar(self):
+	def fs_bar(self, fs, size=None):
 		""" Bar that shows how much space is used on a file system. height is the height in pixels. fs is any file on that file system. """
-		self.writeCommand('fs_bar')
+		self.writeCommand('fs_bar', [fs, size])
 
-	def fs_bar_free(self):
+	def fs_bar_free(self, fs, size=None):
 		""" Bar that shows how much space is free on a file system. height is the height in pixels. fs is any file on that file system. """
-		self.writeCommand('fs_bar_free')
+		self.writeCommand('fs_bar_free', [fs, size])
 
-	def fs_free(self):
+	def fs_free(self, fs=None):
 		""" Free space on a file system available for users. """
-		self.writeCommand('fs_free')
+		self.writeCommand('fs_free', fs)
 
-	def fs_free_perc(self):
+	def fs_free_perc(self, fs=None):
 		""" Free percentage of space on a file system available for users. """
-		self.writeCommand('fs_free_perc')
+		self.writeCommand('fs_free_perc', fs)
 
-	def fs_size(self):
+	def fs_size(self, fs=None):
 		""" File system size. """
-		self.writeCommand('fs_size')
+		self.writeCommand('fs_size', fs)
 
-	def fs_type(self):
+	def fs_type(self, fs=None):
 		""" File system type. """
-		self.writeCommand('fs_type')
+		self.writeCommand('fs_type', fs)
 
-	def fs_used(self):
+	def fs_used(self, fs=None):
 		""" File system used space. """
-		self.writeCommand('fs_used')
+		self.writeCommand('fs_used', fs)
 
-	def fs_used_perc(self):
+	def fs_used_perc(self, fs=None):
 		""" Percent of file system used space. """
-		self.writeCommand('fs_used_perc')
+		self.writeCommand('fs_used_perc', fs)
 
-	def goto(self):
+	def goto(self, x):
 		""" The next element will be printed at position 'x'. """
-		self.writeCommand('goto')
+		self.writeCommand('goto', x)
 
 	def gw_iface(self):
 		""" Displays the default route's interface or "multiple"/"none" accordingly. """
@@ -495,19 +539,19 @@ class ConkyWriter:
 		""" Displays the default gateway's IP or "multiple"/"none" accordingly. """
 		self.writeCommand('gw_ip')
 
-	def hddtemp(self):
+	def hddtemp(self, dev=None):
 		""" Displays temperature of a selected hard disk drive as reported by the hddtemp daemon. Use hddtemp_host and hddtemp_port to specify a host and port for all hddtemp objects. If no dev parameter is given, the first disk returned by the hddtemp daemon is used. """
-		self.writeCommand('hddtemp')
+		self.writeCommand('hddtemp', dev)
 
-	def head(self):
+	def head(self, logfile, lines, next_check=None):
 		""" Displays first N lines of supplied text file. The file is checked every 'next_check' update. If next_check is not supplied, Conky defaults to 2. Max of 30 lines can be displayed, or until the text buffer is filled. """
-		self.writeCommand('head')
+		self.writeCommand('head', [logfile, lines, next_check])
 
-	def hr(self):
+	def hr(self, height=None):
 		""" Horizontal line, height is the height in pixels """
-		self.writeCommand('hr')
+		self.writeCommand('hr', height)
 
-	def hwmon(self):
+	def hwmon(self, type, n, device=None):
 		""" Hwmon sensor from sysfs (Linux 2.6). Parameter dev may be omitted if you have only one hwmon device. Parameter type is either 'in' or 'vol' meaning voltage; 'fan' meaning fan; 'temp' meaning temperature. Parameter n is number of the sensor. See /sys/class/hwmon/ on your local computer. The optional arguments 'factor' and 'offset' allow precalculation of the raw input, which is being modified as follows: 'input = input * factor + offset'. Note that they have to be given as decimal values (i.e. contain at least one decimal place). """
 		self.writeCommand('hwmon')
 
@@ -563,45 +607,45 @@ class ConkyWriter:
 		""" If running the IBM ACPI, displays the fan speed. """
 		self.writeCommand('ibm_fan')
 
-	def ibm_temps(self):
+	def ibm_temps(self, n):
 		""" If running the IBM ACPI, displays the temperatures from the IBM temperature sensors (N=0..7) Sensor 0 is on the CPU, 3 is on the GPU. """
-		self.writeCommand('ibm_temps')
+		self.writeCommand('ibm_temps', n)
 
 	def ibm_volume(self):
 		""" If running the IBM ACPI, displays the "master" volume, controlled by the volume keys (0-14). """
 		self.writeCommand('ibm_volume')
 
-	def iconv_start(self):
+	def iconv_start(self, codeset_from, codeset_to):
 		""" Convert text from one codeset to another using GNU iconv. Needs to be stopped with iconv_stop. """
-		self.writeCommand('iconv_start')
+		self.writeCommand('iconv_start', [codeset_from, codeset_to])
 
 	def iconv_stop(self):
 		""" Stop iconv codeset conversion. """
 		self.writeCommand('iconv_stop')
 
-	def if_empty(self):
+	def if_empty(self, var):
 		""" if conky variable VAR is empty, display everything between $if_empty and the matching $endif """
-		self.writeCommand('if_empty')
+		self.writeCommand('if_empty', var)
 
-	def if_existing(self):
+	def if_existing(self, file, search=None):
 		""" if FILE exists, display everything between if_existing and the matching $endif. The optional second parameter checks for FILE containing the specified string and prints everything between $if_existing and the matching $endif. """
-		self.writeCommand('if_existing')
+		self.writeCommand('if_existing', [file, search])
 
 	def if_gw(self):
 		""" if there is at least one default gateway, display everything between $if_gw and the matching $endif """
 		self.writeCommand('if_gw')
 
-	def if_match(self):
+	def if_match(self, expression):
 		""" Evaluates the given boolean expression, printing everything between $if_match and the matching $endif depending on whether the evaluation returns true or not. Valid expressions consist of a left side, an operator and a right side. Left and right sides are being parsed for contained text objects before evaluation. Recognised left and right side types are: double - Argument consists of only digits and a single dot.long - Argument consists of only digits.string - Argument is enclosed in quotation marks (")Valid operands are: '>', '<', '>=', '<=', '==', '!='. """
-		self.writeCommand('if_match')
+		self.writeCommand('if_match', expression)
 
-	def if_mixer_mute(self):
+	def if_mixer_mute(self, mixer=None):
 		""" If mixer exists, display everything between $if_mixer_mute and the matching $endif. If no mixer is specified, "Vol" is used. """
-		self.writeCommand('if_mixer_mute')
+		self.writeCommand('if_mixer_mute', mixer)
 
-	def if_mounted(self):
+	def if_mounted(self, mountpoint=None):
 		""" if MOUNTPOINT is mounted, display everything between $if_mounted and the matching $endif """
-		self.writeCommand('if_mounted')
+		self.writeCommand('if_mounted', mountpoint)
 
 	def if_mpd_playing(self):
 		""" if mpd is playing or paused, display everything between $if_mpd_playing and the matching $endif """
