@@ -23,6 +23,7 @@ def getAPI():
 FUNCTION_TEMPLATE = """\tdef %s(self):
 \t\t\"\"\" %s \"\"\"
 \t\tself.writeCommand('%s')
+\t\treturn self
 
 """
 

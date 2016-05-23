@@ -14,6 +14,11 @@ class ConkyWriter:
         """ Writes the given text to the internal target stream. """
         self.stream.write(text)
         self.stream.flush()
+        return self
+
+    def newline(self):
+        """ Writes newline character. """
+        self.write('\n')
 
     def writeCommand(self, command, parameters=''):
         """
@@ -34,6 +39,7 @@ class ConkyWriter:
                 raise ValueError('Can not write None value from tuple')
             arguments = ','.join(parameters)
         self.write('${%s %s}' % (command, arguments))
+        return self
 
     def acpiacadapter(self, adapter=None):
         """
@@ -47,42 +53,51 @@ class ConkyWriter:
             if not exists(path):
                 raise IOError('adapter parameter %s not valid, should be a subfolder of /sys/class/power_supply' % adapter)
         self.writeCommand('acpiacadapter', adapter)
+        return self
 
     def acpifan(self):
         """ ACPI fan state """
         self.writeCommand('acpifan')
+        return self
 
     def acpitemp(self):
         """ ACPI temperature in C. """
         self.writeCommand('acpitemp')
+        return self
 
     def addr(self, interface=None):
         """
         IP address for an interface, or "No Address" if no address is assigned.
         """
         self.writeCommand('addr', interface)
+        return self
 
     def addrs(self, interface=None):
         """
         IP addresses for an interface (if one - works like addr). Linux only.
         """
         self.writeCommand('addrs', interface)
+        return self
 
     def adt746xcpu(self):
         """ CPU temperature from therm_adt746x """
         self.writeCommand('adt746xcpu')
+        return self
 
     def adt746xfan(self):
         """ Fan speed from therm_adt746x """
         self.writeCommand('adt746xfan')
+        return self
 
     def alignc(self, num=None):
         """ Align text to centre """
         self.writeCommand('alignc', num)
+        return self
 
     def alignr(self, num=None):
         """ Right-justify text, with space of N """
         self.writeCommand('alignr', num)
+        return self
 
     def apcupsd(self, host):
         """
@@ -90,30 +105,37 @@ class ConkyWriter:
         localhost:3551
         """
         self.writeCommand('apcupsd', host)
+        return self
 
     def apcupsd_cable(self):
         """ Prints the UPS connection type. """
         self.writeCommand('apcupsd_cable')
+        return self
 
     def apcupsd_charge(self):
         """ Current battery capacity in percent. """
         self.writeCommand('apcupsd_charge')
+        return self
 
     def apcupsd_lastxfer(self):
         """ Reason for last transfer from line to battery. """
         self.writeCommand('apcupsd_lastxfer')
+        return self
 
     def apcupsd_linev(self):
         """ Nominal input voltage. """
         self.writeCommand('apcupsd_linev')
+        return self
 
     def apcupsd_load(self):
         """ Current load in percent. """
         self.writeCommand('apcupsd_load')
+        return self
 
     def apcupsd_loadbar(self):
         """ Bar showing current load. """
         self.writeCommand('apcupsd_loadbar')
+        return self
 
     def apcupsd_loadgauge(self, size=None):
         """
@@ -121,6 +143,7 @@ class ConkyWriter:
         (height, width)
         """
         self.writeCommand('apcupsd_loadgauge', size)
+        return self
 
     def apcupsd_loadgraph(self, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
         """
@@ -135,38 +158,47 @@ class ConkyWriter:
         if l:
             parameters.append('-l')
         self.writeCommand('apcupsd_loadgraph', parameters)
+        return self
 
     def apcupsd_model(self):
         """ Prints the model of the UPS. """
         self.writeCommand('apcupsd_model')
+        return self
 
     def apcupsd_name(self):
         """ Prints the UPS user-defined name. """
         self.writeCommand('apcupsd_name')
+        return self
 
     def apcupsd_status(self):
         """ Prints current status (on-line, on-battery). """
         self.writeCommand('apcupsd_status')
+        return self
 
     def apcupsd_temp(self):
         """ Current internal temperature. """
         self.writeCommand('apcupsd_temp')
+        return self
 
     def apcupsd_timeleft(self):
         """ Time left to run on battery. """
         self.writeCommand('apcupsd_timeleft')
+        return self
 
     def apcupsd_upsmode(self):
         """ Prints the UPS mode (e.g. standalone). """
         self.writeCommand('apcupsd_upsmode')
+        return self
 
     def apm_adapter(self):
         """ Display APM AC adapter status (FreeBSD only) """
         self.writeCommand('apm_adapter')
+        return self
 
     def apm_battery_life(self):
         """ Display APM battery life in percent (FreeBSD only) """
         self.writeCommand('apm_battery_life')
+        return self
 
     def apm_battery_time(self):
         """
@@ -174,62 +206,77 @@ class ConkyWriter:
         adapterstatus is on-line or charging (FreeBSD only)
         """
         self.writeCommand('apm_battery_time')
+        return self
 
     def audacious_bar(self, size=None):
         """ Progress bar """
         self.writeCommand('audacious_bar', size)
+        return self
 
     def audacious_bitrate(self):
         """ Bitrate of current tune """
         self.writeCommand('audacious_bitrate')
+        return self
 
     def audacious_channels(self):
         """ Number of audio channels of current tune """
         self.writeCommand('audacious_channels')
+        return self
 
     def audacious_filename(self):
         """ Full path and filename of current tune """
         self.writeCommand('audacious_filename')
+        return self
 
     def audacious_frequency(self):
         """ Sampling frequency of current tune """
         self.writeCommand('audacious_frequency')
+        return self
 
     def audacious_length(self):
         """ Total length of current tune as MM:SS """
         self.writeCommand('audacious_length')
+        return self
 
     def audacious_length_seconds(self):
         """ Total length of current tune in seconds """
         self.writeCommand('audacious_length_seconds')
+        return self
 
     def audacious_main_volume(self):
         """ The current volume fetched from Audacious """
         self.writeCommand('audacious_main_volume')
+        return self
 
     def audacious_playlist_length(self):
         """ Number of tunes in playlist """
         self.writeCommand('audacious_playlist_length')
+        return self
 
     def audacious_playlist_position(self):
         """ Playlist position of current tune """
         self.writeCommand('audacious_playlist_position')
+        return self
 
     def audacious_position(self):
         """ Position of current tune (MM:SS) """
         self.writeCommand('audacious_position')
+        return self
 
     def audacious_position_seconds(self):
         """ Position of current tune in seconds """
         self.writeCommand('audacious_position_seconds')
+        return self
 
     def audacious_status(self):
         """ Player status (Playing/Paused/Stopped/Not running) """
         self.writeCommand('audacious_status')
+        return self
 
     def audacious_title(self, maxLength=None):
         """ Title of current tune with optional maximum length specifier """
         self.writeCommand('audacious_title', maxLength)
+        return self
 
     def battery(self, num=None):
         """
@@ -237,6 +284,7 @@ class ConkyWriter:
         ACPI battery number can be given as argument (default is BAT0).
         """
         self.writeCommand('battery', num)
+        return self
 
     def battery_bar(self):
         """
@@ -244,6 +292,7 @@ class ConkyWriter:
         number can be given as argument (default is BAT0).
         """
         self.writeCommand('battery_bar')
+        return self
 
     def battery_percent(self, num=None):
         """
@@ -251,6 +300,7 @@ class ConkyWriter:
         be given as argument (default is BAT0).
         """
         self.writeCommand('battery_percent', num)
+        return self
 
     def battery_short(self, num=None):
         """
@@ -261,6 +311,7 @@ class ConkyWriter:
         and U for unknown.
         """
         self.writeCommand('battery_short', num)
+        return self
 
     def battery_time(self, num=None):
         """
@@ -268,50 +319,62 @@ class ConkyWriter:
         number can be given as argument (default is BAT0).
         """
         self.writeCommand('battery_time', num)
+        return self
 
     def startBlink(self):
         """ Start blinking """
         self.write('${blink ')
+        return self
 
     def endBlink(self):
         """ End blinking """
         self.write('}')
+        return self
 
     def bmpx_album(self):
         """ Album in current BMPx track """
         self.writeCommand('bmpx_album')
+        return self
 
     def bmpx_artist(self):
         """ Artist in current BMPx track """
         self.writeCommand('bmpx_artist')
+        return self
 
     def bmpx_bitrate(self):
         """ Bitrate of the current BMPx track """
         self.writeCommand('bmpx_bitrate')
+        return self
 
     def bmpx_title(self):
         """ Title of the current BMPx track """
         self.writeCommand('bmpx_title')
+        return self
 
     def bmpx_track(self):
         """ Track number of the current BMPx track """
         self.writeCommand('bmpx_track')
+        return self
 
     def bmpx_uri(self):
         """ URI of the current BMPx track """
         self.writeCommand('bmpx_uri')
+        return self
 
     def buffers(self):
         """ Amount of memory buffered """
         self.writeCommand('buffers')
+        return self
 
     def cached(self):
         """ Amount of memory cached """
         self.writeCommand('cached')
+        return self
 
     def cmdlineToPID(self, search):
         """ PID of the first process that has string in it's commandline """
         self.writeCommand('cmdline_to_pid', search)
+        return self
 
     def color(self, color=None):
         """
@@ -321,6 +384,7 @@ class ConkyWriter:
         black, white.
         """
         self.writeCommand('color', color)
+        return self
 
     def colorN(self, n):
         """
@@ -331,6 +395,7 @@ class ConkyWriter:
         if v < 0 or v > 9:
             raise ValueError('n should be an integer between 0 and 9 (inclusive)')
         self.writeCommand('color%d' % n)
+        return self
 
     def combine(self, var1, var2):
         """
@@ -342,18 +407,22 @@ class ConkyWriter:
         each other.
         """
         self.writeCommand('combine', [var1, var2])
+        return self
 
     def conky_build_arch(self):
         """ CPU architecture Conky was built for """
         self.writeCommand('conky_build_arch')
+        return self
 
     def conky_build_date(self):
         """ Date Conky was built """
         self.writeCommand('conky_build_date')
+        return self
 
     def conky_version(self):
         """ Conky version """
         self.writeCommand('conky_version')
+        return self
 
     def cpu(self, n=None):
         """
@@ -362,6 +431,7 @@ class ConkyWriter:
         are individual CPUs.
         """
         self.writeCommand('cpu', n)
+        return self
 
     def cpubar(self, n=None, size=None):
         """
@@ -372,6 +442,7 @@ class ConkyWriter:
         if len(size) != 2:
             raise ValueError('Size parameter should be a 2-dimensional tuple')
         self.writeCommand('cpubar', [n, size])
+        return self
 
     def cpugauge(self, n=None, size=None):
         """
@@ -383,6 +454,7 @@ class ConkyWriter:
         if len(size) != 2:
             raise ValueError('Size parameter should be a 2-dimensional tuple')
         self.writeCommand('cpugauge', [n, size])
+        return self
 
     def cpugraph(self, n=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
         """
@@ -401,6 +473,7 @@ class ConkyWriter:
         if l:
             parameters.append('-l')
         self.writeCommand('cpugraph')
+        return self
 
     def curl(self, url, interval=None):
         """ Download data from URI using Curl at the specified interval. The
@@ -411,6 +484,7 @@ class ConkyWriter:
         specified. You can use any protocol that Curl supports.
         """
         self.writeCommand('curl', [url, interval])
+        return self
 
     def desktop(self):
         """
@@ -418,6 +492,7 @@ class ConkyWriter:
         running in X" if this is the case.
         """
         self.writeCommand('desktop')
+        return self
 
     def desktop_name(self):
         """
@@ -425,12 +500,14 @@ class ConkyWriter:
         unning in X" if this is the case.
         """
         self.writeCommand('desktop_name')
+        return self
 
     def desktop_number(self):
         """
         Number of desktops or the message "Not running in X" if this is the case.
         """
         self.writeCommand('desktop_number')
+        return self
 
     def disk_protect(self, device):
         """
@@ -438,6 +515,7 @@ class ConkyWriter:
         "frozen" or "free " (note the padding).
         """
         self.writeCommand('disk_protect', device)
+        return self
 
     def diskio(self, device=None):
         """
@@ -445,14 +523,17 @@ class ConkyWriter:
         for /dev/sda. Individual partitions are allowed.
         """
         self.writeCommand('diskio', device)
+        return self
 
     def diskio_read(self, device=None):
         """ Displays current disk IO for reads. Device as in diskio. """
         self.writeCommand('diskio_read', device)
+        return self
 
     def diskio_write(self, device=None):
         """ Displays current disk IO for writes. Device as in diskio. """
         self.writeCommand('diskio_write', device)
+        return self
 
     def diskiograph(self, device=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
         """
@@ -471,6 +552,7 @@ class ConkyWriter:
         if l:
             parameters.append('-l')
         self.writeCommand('diskiograph', parameters)
+        return self
 
     def diskiograph_read(self, device=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
         """
@@ -490,6 +572,7 @@ class ConkyWriter:
         if l:
             parameters.append('-l')
         self.writeCommand('diskiograph_read')
+        return self
 
     def diskiograph_write(self, device=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
         """
@@ -509,14 +592,17 @@ class ConkyWriter:
         if l:
             parameters.append('-l')
         self.writeCommand('diskiograph_write')
+        return self
 
     def downspeed(self, net=None):
         """ Download speed in suitable IEC units """
         self.writeCommand('downspeed', net)
+        return self
 
     def downspeedf(self, net=None):
         """ Download speed in KiB with one decimal """
         self.writeCommand('downspeedf', net)
+        return self
 
     def downspeedgraph(self, netdev=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
         """
@@ -535,6 +621,7 @@ class ConkyWriter:
         if l:
             parameters.append('-l')
         self.writeCommand('downspeedgraph', parameters)
+        return self
 
     def draft_mails(self, maildir=None):
         """
@@ -543,30 +630,37 @@ class ConkyWriter:
         -1.
         """
         self.writeCommand('draft_mails', maildir)
+        return self
 
     def elseCondition(self):
         """ Text to show if any of the above are not true """
         self.writeCommand('else')
+        return self
 
     def endif(self):
         """ Ends an $if block. """
         self.writeCommand('endif')
+        return self
 
     def entropy_avail(self):
         """ Current entropy available for crypto freaks """
         self.writeCommand('entropy_avail')
+        return self
 
     def entropy_bar(self, size=None):
         """ Normalized bar of available entropy for crypto freaks """
         self.writeCommand('entropy_bar', size)
+        return self
 
     def entropy_perc(self):
         """ Percentage of entropy available in comparison to the poolsize """
         self.writeCommand('entropy_perc')
+        return self
 
     def entropy_poolsize(self):
         """ Total size of system entropy pool for crypto freaks """
         self.writeCommand('entropy_poolsize')
+        return self
 
     def eval(self, string):
         """
@@ -576,6 +670,7 @@ class ConkyWriter:
         parsed again.
         """
         self.writeCommand('eval', string)
+        return self
 
     def eve(self, api_userid, api_key, character_id):
         """
@@ -584,6 +679,7 @@ class ConkyWriter:
         remaining training time.
         """
         self.writeCommand('eve', [api_userid, api_key, character_id])
+        return self
 
     def execCommand(self, command):
         """
@@ -592,6 +688,7 @@ class ConkyWriter:
         wanted behaviour in C and posting a patch.
         """
         self.writeCommand('exec', command)
+        return self
 
     def execbar(self, command):
         """
@@ -600,6 +697,7 @@ class ConkyWriter:
         via the default_bar_size config setting.
         """
         self.writeCommand('execbar', command)
+        return self
 
     def execgauge(self, command):
         """
@@ -608,6 +706,7 @@ class ConkyWriter:
         controlled via the default_gauge_size config setting.
         """
         self.writeCommand('execgauge', command)
+        return self
 
     def execgraph(self, command, t=False, l=False):
         """
@@ -626,6 +725,7 @@ class ConkyWriter:
             parameters.append('-l')
         parameters.append(command)
         self.writeCommand('execgraph', parameters)
+        return self
 
     def execi(self, interval, command):
         """
@@ -633,14 +733,17 @@ class ConkyWriter:
         update_interval in configuration. See also $texeci
         """
         self.writeCommand('execi', [interval, command])
+        return self
 
     def execibar(self, interval, command):
         """ Same as execbar, except with an interval """
         self.writeCommand('execibar', [interval, command])
+        return self
 
     def execigauge(self, interval, command):
         """ Same as execgauge, but takes an interval arg and gauges values. """
         self.writeCommand('execigauge', [interval, command])
+        return self
 
     def execigraph(self, interval, command, t=False, l=False):
         """
@@ -654,6 +757,7 @@ class ConkyWriter:
             parameters.append('-l')
         parameters.append(command)
         self.writeCommand('execigraph', parameters)
+        return self
 
     def execp(self, command):
         """
@@ -669,6 +773,7 @@ class ConkyWriter:
         created and destroyed at every interval.
         """
         self.writeCommand('execp', command)
+        return self
 
     def execpi(self, interval, command):
         """
@@ -677,6 +782,7 @@ class ConkyWriter:
         command is still parsed and evaluated at every interval.
         """
         self.writeCommand('execpi', [interval, command])
+        return self
 
     def flagged_mails(self, maildir=None):
         """
@@ -685,6 +791,7 @@ class ConkyWriter:
         -1.
         """
         self.writeCommand('flagged_mails', maildir)
+        return self
 
     def font(self, font):
         """
@@ -693,6 +800,7 @@ class ConkyWriter:
         change back to the default font (much like with $color)
         """
         self.writeCommand('font', font)
+        return self
 
     def format_time(self, seconds, format):
         """
@@ -710,6 +818,7 @@ class ConkyWriter:
         trailing zero's. (also maximum 9)
         """
         self.writeCommand('format_time', [seconds, format])
+        return self
 
     def forwarded_mails(self, maildir=None):
         """
@@ -718,6 +827,7 @@ class ConkyWriter:
         return -1.
         """
         self.writeCommand('forwarded_mails', maildir)
+        return self
 
     def freq(self, n=None):
         """
@@ -725,6 +835,7 @@ class ConkyWriter:
         the parameter defaults to 1.
         """
         self.writeCommand('freq', n)
+        return self
 
     def freq_g(self, n=None):
         """
@@ -732,6 +843,7 @@ class ConkyWriter:
         the parameter defaults to 1.
         """
         self.writeCommand('freq_g', n)
+        return self
 
     def fs_bar(self, fs, size=None):
         """
@@ -742,6 +854,7 @@ class ConkyWriter:
         if len(size) != 2:
             raise ValueError('Size parameter should be a 2-dimensional tuple')
         self.writeCommand('fs_bar', [fs, size])
+        return self
 
     def fs_bar_free(self, fs, size=None):
         """
@@ -752,46 +865,56 @@ class ConkyWriter:
         if len(size) != 2:
             raise ValueError('Size parameter should be a 2-dimensional tuple')
         self.writeCommand('fs_bar_free', [fs, size])
+        return self
 
     def fs_free(self, fs=None):
         """ Free space on a file system available for users. """
         self.writeCommand('fs_free', fs)
+        return self
 
     def fs_free_perc(self, fs=None):
         """ Free percentage of space on a file system available for users. """
         self.writeCommand('fs_free_perc', fs)
+        return self
 
     def fs_size(self, fs=None):
         """ File system size. """
         self.writeCommand('fs_size', fs)
+        return self
 
     def fs_type(self, fs=None):
         """ File system type. """
         self.writeCommand('fs_type', fs)
+        return self
 
     def fs_used(self, fs=None):
         """ File system used space. """
         self.writeCommand('fs_used', fs)
+        return self
 
     def fs_used_perc(self, fs=None):
         """ Percent of file system used space. """
         self.writeCommand('fs_used_perc', fs)
+        return self
 
     def goto(self, x):
         """ The next element will be printed at position 'x'. """
         self.writeCommand('goto', x)
+        return self
 
     def gw_iface(self):
         """
         Displays the default route's interface or "multiple"/"none" accordingly.
         """
         self.writeCommand('gw_iface')
+        return self
 
     def gw_ip(self):
         """
         Displays the default gateway's IP or "multiple"/"none" accordingly.
         """
         self.writeCommand('gw_ip')
+        return self
 
     def hddtemp(self, dev=None):
         """
@@ -801,6 +924,7 @@ class ConkyWriter:
         disk returned by the hddtemp daemon is used.
         """
         self.writeCommand('hddtemp', dev)
+        return self
 
     def head(self, logfile, lines, next_check=None):
         """
@@ -811,10 +935,12 @@ class ConkyWriter:
         if not exists(logfile):
             raise IOError('File %s does not exists' % logfile)
         self.writeCommand('head', [logfile, lines, next_check])
+        return self
 
     def hr(self, height=None):
         """ Horizontal line, height is the height in pixels """
         self.writeCommand('hr', height)
+        return self
 
     def hwmon(self, type, n, dev=None, factor=None, offset=None):
         """
@@ -828,6 +954,7 @@ class ConkyWriter:
         decimal values (i.e. contain at least one decimal place).
         """
         self.writeCommand('hwmon', [type, n, dev, factor, offset])
+        return self
 
     def i2c(self, type, n, dev=None, factor=None, offset=None):
         """
@@ -841,6 +968,7 @@ class ConkyWriter:
         decimal values (i.e. contain at least one decimal place).
         """
         self.writeCommand('i2c', [type, n, dev, factor, offset])
+        return self
 
     def i8k_ac_status(self):
         """
@@ -849,6 +977,7 @@ class ConkyWriter:
         Beware that this is by default not enabled by i8k itself.
         """
         self.writeCommand('i8k_ac_status')
+        return self
 
     def i8k_bios(self):
         """
@@ -856,6 +985,7 @@ class ConkyWriter:
         version as listed in /proc/i8k.
         """
         self.writeCommand('i8k_bios')
+        return self
 
     def i8k_buttons_status(self):
         """
@@ -863,6 +993,7 @@ class ConkyWriter:
         volume buttons status as listed in /proc/i8k.
         """
         self.writeCommand('i8k_buttons_status')
+        return self
 
     def i8k_cpu_temp(self):
         """
@@ -870,6 +1001,7 @@ class ConkyWriter:
         temperature in Celsius, as reported by /proc/i8k.
         """
         self.writeCommand('i8k_cpu_temp')
+        return self
 
     def i8k_left_fan_rpm(self):
         """
@@ -878,6 +1010,7 @@ class ConkyWriter:
         /proc/i8k. Beware, some laptops i8k reports these fans in reverse order.
         """
         self.writeCommand('i8k_left_fan_rpm')
+        return self
 
     def i8k_left_fan_status(self):
         """
@@ -886,6 +1019,7 @@ class ConkyWriter:
         Beware, some laptops i8k reports these fans in reverse order.
         """
         self.writeCommand('i8k_left_fan_status')
+        return self
 
     def i8k_right_fan_rpm(self):
         """
@@ -894,6 +1028,7 @@ class ConkyWriter:
         /proc/i8k. Beware, some laptops i8k reports these fans in reverse order.
         """
         self.writeCommand('i8k_right_fan_rpm')
+        return self
 
     def i8k_right_fan_status(self):
         """
@@ -902,6 +1037,7 @@ class ConkyWriter:
         Beware, some laptops i8k reports these fans in reverse order.
         """
         self.writeCommand('i8k_right_fan_status')
+        return self
 
     def i8k_serial(self):
         """
@@ -909,6 +1045,7 @@ class ConkyWriter:
         laptop serial number as listed in /proc/i8k.
         """
         self.writeCommand('i8k_serial')
+        return self
 
     def i8k_version(self):
         """
@@ -916,6 +1053,7 @@ class ConkyWriter:
         version formatting of /proc/i8k.
         """
         self.writeCommand('i8k_version')
+        return self
 
     def ibm_brightness(self):
         """
@@ -923,10 +1061,12 @@ class ConkyWriter:
         0-7).
         """
         self.writeCommand('ibm_brightness')
+        return self
 
     def ibm_fan(self):
         """ If running the IBM ACPI, displays the fan speed. """
         self.writeCommand('ibm_fan')
+        return self
 
     def ibm_temps(self, n):
         """
@@ -934,6 +1074,7 @@ class ConkyWriter:
         temperature sensors (N=0..7) Sensor 0 is on the CPU, 3 is on the GPU.
         """
         self.writeCommand('ibm_temps', n)
+        return self
 
     def ibm_volume(self):
         """
@@ -941,16 +1082,19 @@ class ConkyWriter:
         volume keys (0-14).
         """
         self.writeCommand('ibm_volume')
+        return self
 
     def iconv_start(self, codeset_from, codeset_to):
         """ Convert text from one codeset to another using GNU iconv. Needs to
         be stopped with iconv_stop.
         """
         self.writeCommand('iconv_start', [codeset_from, codeset_to])
+        return self
 
     def iconv_stop(self):
         """ Stop iconv codeset conversion. """
         self.writeCommand('iconv_stop')
+        return self
 
     def if_empty(self, var):
         """
@@ -958,6 +1102,7 @@ class ConkyWriter:
         the matching $endif
         """
         self.writeCommand('if_empty', var)
+        return self
 
     def if_existing(self, file, search=None):
         """
@@ -967,6 +1112,7 @@ class ConkyWriter:
         matching $endif.
         """
         self.writeCommand('if_existing', [file, search])
+        return self
 
     def if_gw(self):
         """
@@ -974,6 +1120,7 @@ class ConkyWriter:
         $if_gw and the matching $endif
         """
         self.writeCommand('if_gw')
+        return self
 
     def if_match(self, expression):
         """
@@ -988,6 +1135,7 @@ class ConkyWriter:
         '==', '!='.
         """
         self.writeCommand('if_match', expression)
+        return self
 
     def if_mixer_mute(self, mixer=None):
         """
@@ -995,12 +1143,14 @@ class ConkyWriter:
         matching $endif. If no mixer is specified, "Vol" is used.
         """
         self.writeCommand('if_mixer_mute', mixer)
+        return self
 
     def if_mounted(self, mountpoint=None):
         """
         if MOUNTPOINT is mounted, display everything between $if_mounted and the matching $endif
         """
         self.writeCommand('if_mounted', mountpoint)
+        return self
 
     def if_mpd_playing(self):
         """
@@ -1008,6 +1158,7 @@ class ConkyWriter:
         and the matching $endif
         """
         self.writeCommand('if_mpd_playing')
+        return self
 
     def if_running(self, process=None):
         """
@@ -1016,6 +1167,7 @@ class ConkyWriter:
         supported.
         """
         self.writeCommand('if_running', process)
+        return self
 
     def if_smapi_bat_installed(self, index=None):
         """
@@ -1024,6 +1176,7 @@ class ConkyWriter:
         $endif
         """
         self.writeCommand('if_smapi_bat_installed', index)
+        return self
 
     def if_up(self, interface=None):
         """
@@ -1031,6 +1184,7 @@ class ConkyWriter:
         matching $endif
         """
         self.writeCommand('if_up', interface)
+        return self
 
     def if_updatenr(self, updatenr=None):
         """
@@ -1042,6 +1196,7 @@ class ConkyWriter:
         nothing the other half of the time.
         """
         self.writeCommand('if_updatenr', updatenr)
+        return self
 
     def if_xmms2_connected(self):
         """
@@ -1049,6 +1204,7 @@ class ConkyWriter:
         if xmms2 is running.
         """
         self.writeCommand('if_xmms2_connected')
+        return self
 
     def image(self, path, position=None, size=None, n=False, interval=None):
         """
@@ -1089,6 +1245,7 @@ class ConkyWriter:
             parameters.append('-f')
             parameters.append(interval)
         self.writeCommand('image', parameters)
+        return self
 
     def imap_messages(self, args=None):
         """
@@ -1102,6 +1259,7 @@ class ConkyWriter:
         prompted to enter the password when Conky starts.
         """
         self.writeCommand('imap_messages', args)
+        return self
 
     def imap_unseen(self, args=None):
         """
@@ -1115,6 +1273,7 @@ class ConkyWriter:
         when Conky starts.
         """
         self.writeCommand('imap_unseen', args)
+        return self
 
     def include(self, path):
         """
@@ -1125,6 +1284,7 @@ class ConkyWriter:
         if not exists(path):
             raise IOError('File %s does not exists' % path)
         self.writeCommand('include', path)
+        return self
 
     def ioscheduler(self, disk):
         """
@@ -1132,20 +1292,24 @@ class ConkyWriter:
         (i.e. e.g. "hda" or "sdb")
         """
         self.writeCommand('ioscheduler', disk)
+        return self
 
     def kernel(self):
         """ Kernel version """
         self.writeCommand('kernel')
+        return self
 
     def laptop_mode(self):
         """ The value of /proc/sys/vm/laptop_mode """
         self.writeCommand('laptop_mode')
+        return self
 
     def lines(self, textfile):
         """ Displays the number of lines in the given file """
         if not exists(textfile):
             raise IOError('File %s does not exists' % textfile)
         self.writeCommand('lines', textfile)
+        return self
 
     def loadavg(self, n=None):
         """
@@ -1153,8 +1317,11 @@ class ConkyWriter:
         for past 15 minutes. Without argument, prints all three values separated
         by whitespace.
         """
-        # TODO : Check if n = 1|2|3
+        v = int(n)
+        if v < 1 or v > 3:
+            raise ValueError('n parameter should be an interger between 1 and 3 (inclusive)')
         self.writeCommand('loadavg', n)
+        return self
 
     def loadgraph(self, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
         """
@@ -1173,6 +1340,7 @@ class ConkyWriter:
         if l:
             parameters.append('-l')
         self.writeCommand('loadgraph', parameters)
+        return self
 
     def lua(self, function_name, args=None):
         """
@@ -1182,6 +1350,7 @@ class ConkyWriter:
         function unless you put you place 'conky_' in front of it yourself.
         """
         self.writeCommand('lua', [function_name, args])
+        return self
 
     def lua_bar(self, function_name, size=None, args=None):
         """
@@ -1195,6 +1364,7 @@ class ConkyWriter:
         if len(size) != 2:
             raise ValueError('Size parameter should be a 2-dimensional tuple')
         self.writeCommand('lua_bar', [size, function_name, args])
+        return self
 
     def lua_gauge(self, function_name, size=None, args=None):
         """
@@ -1208,6 +1378,7 @@ class ConkyWriter:
         if len(size) != 2:
             raise ValueError('Size parameter should be a 2-dimensional tuple')
         self.writeCommand('lua_gauge', [size, function_name, args])
+        return self
 
     def lua_graph(self, function_name, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
         """ Executes a Lua function with and draws a graph. Expects result value
@@ -1228,6 +1399,7 @@ class ConkyWriter:
         if l:
             parameters.append('-l')
         self.writeCommand('lua_graph', parameters)
+        return self
 
     def lua_parse(self, function_name, args=None):
         """
@@ -1238,10 +1410,12 @@ class ConkyWriter:
         unless you put you place 'conky_' in front of it yourself.
         """
         self.writeCommand('lua_parse', [function_name, args])
+        return self
 
     def machine(self):
         """ Machine, i686 for example """
         self.writeCommand('machine')
+        return self
 
     def mails(self, mailbox=None):
         """
@@ -1251,6 +1425,7 @@ class ConkyWriter:
         favourite protocol. See also new_mails.
         """
         self.writeCommand('mails', mailbox)
+        return self
 
     def mboxscan(self, mbox, n=None, fw=None, sw=None):
         """
@@ -1270,10 +1445,12 @@ class ConkyWriter:
             parameters.append(sw)
         parameters.append(mbox)
         self.writeCommand('mboxscan', parameters)
+        return self
 
     def mem(self):
         """ Amount of memory in use """
         self.writeCommand('mem')
+        return self
 
     def membar(self, size=None):
         """
@@ -1283,6 +1460,7 @@ class ConkyWriter:
         if len(size) != 2:
             raise ValueError('Size parameter should be a 2-dimensional tuple')
         self.writeCommand('membar', size)
+        return self
 
     def memeasyfree(self):
         """
@@ -1290,10 +1468,12 @@ class ConkyWriter:
         (buffers/cache)
         """
         self.writeCommand('memeasyfree')
+        return self
 
     def memfree(self):
         """ Amount of free memory """
         self.writeCommand('memfree')
+        return self
 
     def memgauge(self, size=None):
         """
@@ -1303,6 +1483,7 @@ class ConkyWriter:
         if len(size) != 2:
             raise ValueError('Size parameter should be a 2-dimensional tuple')
         self.writeCommand('memgauge', size)
+        return self
 
     def memgraph(self, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
         """
@@ -1320,14 +1501,17 @@ class ConkyWriter:
         if l:
             parameters.append('-l')
         self.writeCommand('memgraph', parameters)
+        return self
 
     def memmax(self):
         """ Total amount of memory """
         self.writeCommand('memmax')
+        return self
 
     def memperc(self):
         """ Percentage of memory in use """
         self.writeCommand('memperc')
+        return self
 
     def mixer(self, device=None):
         """
@@ -1340,6 +1524,7 @@ class ConkyWriter:
         "Video", "Radio" and "Monitor".
         """
         self.writeCommand('mixer', device)
+        return self
 
     def mixerbar(self, device=None):
         """
@@ -1347,6 +1532,7 @@ class ConkyWriter:
         or details on arguments.
         """
         self.writeCommand('mixerbar', device)
+        return self
 
     def mixerl(self, device=None):
         """
@@ -1354,6 +1540,7 @@ class ConkyWriter:
         $mixer for details on arguments.
         """
         self.writeCommand('mixerl', device)
+        return self
 
     def mixerlbar(self, device=None):
         """
@@ -1361,6 +1548,7 @@ class ConkyWriter:
         See docs for $mixer for details on arguments.
         """
         self.writeCommand('mixerlbar', device)
+        return self
 
     def mixerr(self, device=None):
         """
@@ -1368,6 +1556,7 @@ class ConkyWriter:
         $mixer for details on arguments.
         """
         self.writeCommand('mixerr', device)
+        return self
 
     def mixerrbar(self, device=None):
         """
@@ -1375,50 +1564,62 @@ class ConkyWriter:
         See docs for $mixer for details on arguments.
         """
         self.writeCommand('mixerrbar', device)
+        return self
 
     def moc_album(self):
         """ Album of the current MOC song """
         self.writeCommand('moc_album')
+        return self
 
     def moc_artist(self):
         """ Artist of the current MOC song """
         self.writeCommand('moc_artist')
+        return self
 
     def moc_bitrate(self):
         """ Bitrate in the current MOC song """
         self.writeCommand('moc_bitrate')
+        return self
 
     def moc_curtime(self):
         """ Current time of the current MOC song """
         self.writeCommand('moc_curtime')
+        return self
 
     def moc_file(self):
         """ File name of the current MOC song """
         self.writeCommand('moc_file')
+        return self
 
     def moc_rate(self):
         """ Rate of the current MOC song """
         self.writeCommand('moc_rate')
+        return self
 
     def moc_song(self):
         """ The current song name being played in MOC. """
         self.writeCommand('moc_song')
+        return self
 
     def moc_state(self):
         """ Current state of MOC; playing, stopped etc. """
         self.writeCommand('moc_state')
+        return self
 
     def moc_timeleft(self):
         """ Time left in the current MOC song """
         self.writeCommand('moc_timeleft')
+        return self
 
     def moc_title(self):
         """ Title of the current MOC song """
         self.writeCommand('moc_title')
+        return self
 
     def moc_totaltime(self):
         """ Total length of the current MOC song """
         self.writeCommand('moc_totaltime')
+        return self
 
     def monitor(self):
         """
@@ -1426,6 +1627,7 @@ class ConkyWriter:
         "Not running in X" if this is the case.
         """
         self.writeCommand('monitor')
+        return self
 
     def monitor_number(self):
         """
@@ -1433,54 +1635,67 @@ class ConkyWriter:
         case.
         """
         self.writeCommand('monitor_number')
+        return self
 
     def mpd_album(self):
         """ Album in current MPD song """
         self.writeCommand('mpd_album')
+        return self
 
     def mpd_artist(self):
         """ Artist in current MPD song must be enabled at compile """
         self.writeCommand('mpd_artist')
+        return self
 
     def mpd_bar(self, size=None):
         """ Bar of mpd's progress """
         self.writeCommand('mpd_bar', size)
+        return self
 
     def mpd_bitrate(self):
         """ Bitrate of current song """
         self.writeCommand('mpd_bitrate')
+        return self
 
     def mpd_date(self):
         """ Date of current song """
         self.writeCommand('mpd_date')
+        return self
 
     def mpd_elapsed(self):
         """ Song's elapsed time """
         self.writeCommand('mpd_elapsed')
+        return self
 
     def mpd_file(self):
         """ Prints the file name of the current MPD song """
         self.writeCommand('mpd_file')
+        return self
 
     def mpd_length(self):
         """ Song's length """
         self.writeCommand('mpd_length')
+        return self
 
     def mpd_name(self):
         """ Prints the MPD name field """
         self.writeCommand('mpd_name')
+        return self
 
     def mpd_percent(self):
         """ Percent of song's progress """
         self.writeCommand('mpd_percent')
+        return self
 
     def mpd_random(self):
         """ Random status (On/Off) """
         self.writeCommand('mpd_random')
+        return self
 
     def mpd_repeat(self):
         """ Repeat status (On/Off) """
         self.writeCommand('mpd_repeat')
+        return self
 
     def mpd_smart(self, maxLength=None):
         """
@@ -1488,22 +1703,27 @@ class ConkyWriter:
         depending on whats available
         """
         self.writeCommand('mpd_smart', maxLength)
+        return self
 
     def mpd_status(self):
         """ Playing, stopped, et cetera. """
         self.writeCommand('mpd_status')
+        return self
 
     def mpd_title(self, maxLength=None):
         """ Title of current MPD song """
         self.writeCommand('mpd_title', maxLength)
+        return self
 
     def mpd_track(self):
         """ Prints the MPD track field """
         self.writeCommand('mpd_track')
+        return self
 
     def mpd_vol(self):
         """ MPD's volume """
         self.writeCommand('mpd_vol')
+        return self
 
     def nameserver(self, index=None):
         """
@@ -1511,6 +1731,7 @@ class ConkyWriter:
         to 0.
         """
         self.writeCommand('nameserver', index)
+        return self
 
     def new_mails(self, mailbox=None):
         """
@@ -1518,14 +1739,17 @@ class ConkyWriter:
         mbox and maildir type mailboxes are supported.
         """
         self.writeCommand('new_mails', mailbox)
+        return self
 
     def nodename(self):
         """ Hostname """
         self.writeCommand('nodename')
+        return self
 
     def nodename_short(self):
         """ Short hostname (same as 'hostname -s' shell command). """
         self.writeCommand('nodename_short')
+        return self
 
     def nvidia(self, threshold):
         """
@@ -1539,14 +1763,17 @@ class ConkyWriter:
         applications
         """
         self.writeCommand('nvidia', threshold)
+        return self
 
     def offset(self, pixels=None):
         """ Move text over by N pixels. See also $voffset. """
         self.writeCommand('offset', pixels)
+        return self
 
     def outlinecolor(self, color=None):
         """ Change outline color """
         self.writeCommand('outlinecolor', color)
+        return self
 
     def pb_battery(self, item):
         """
@@ -1562,6 +1789,7 @@ class ConkyWriter:
         not discharging.
         """
         self.writeCommand('pb_battery', item)
+        return self
 
     def pid_chroot(self, pid):
         """
@@ -1569,50 +1797,62 @@ class ConkyWriter:
         the process did a chroot syscall)
         """
         self.writeCommand('pid_chroot', pid)
+        return self
 
     def pid_cmdline(self, pid):
         """ Command line this process was invoked with """
         self.writeCommand('pid_cmdline', pid)
+        return self
 
     def pid_cwd(self, pid):
         """ Current working directory of the process """
         self.writeCommand('pid_cwd', pid)
+        return self
 
     def pid_environ(self, pid, varname):
         """ Contents of a environment-var of the process """
         self.writeCommand('pid_environ', [pid, varname])
+        return self
 
     def pid_environ_list(self, pid):
         """ List of environment-vars that the process can see """
         self.writeCommand('pid_environ_list', pid)
+        return self
 
     def pid_exe(self, pid):
         """ Path to executed command that started the process """
         self.writeCommand('pid_exe', pid)
+        return self
 
     def pid_nice(self, pid):
         """ The nice value of the process """
         self.writeCommand('pid_nice', pid)
+        return self
 
     def pid_openfiles(self, pid):
         """ List of files that the process has open """
         self.writeCommand('pid_openfiles', pid)
+        return self
 
     def pid_parent(self, pid):
         """ The pid of the parent of the process """
         self.writeCommand('pid_parent', pid)
+        return self
 
     def pid_priority(self, pid):
         """ The priority of the process (see 'priority' in "man 5 proc") """
         self.writeCommand('pid_priority', pid)
+        return self
 
     def pid_read(self, pid):
         """ Total number of bytes read by the process """
         self.writeCommand('pid_read', pid)
+        return self
 
     def pid_state(self, pid):
         """ State of the process """
         self.writeCommand('pid_state', pid)
+        return self
 
     def pid_state_short(self, pid):
         """
@@ -1622,26 +1862,32 @@ class ConkyWriter:
         (on a signal), and W is paging
         """
         self.writeCommand('pid_state_short', pid)
+        return self
 
     def pid_stderr(self, pid):
         """ Filedescriptor binded to the STDERR of the process """
         self.writeCommand('pid_stderr', pid)
+        return self
 
     def pid_stdin(self, pid):
         """ Filedescriptor binded to the STDIN of the process """
         self.writeCommand('pid_stdin', pid)
+        return self
 
     def pid_stdout(self, pid):
         """ Filedescriptor binded to the STDOUT of the process """
         self.writeCommand('pid_stdout', pid)
+        return self
 
     def pid_threads(self, pid):
         """ Number of threads in process containing this thread """
         self.writeCommand('pid_threads', pid)
+        return self
 
     def pid_thread_list(self, pid):
         """ List with pid's from threads from this process """
         self.writeCommand('pid_thread_list', pid)
+        return self
 
     def pid_time_kernelmode(self, pid):
         """
@@ -1649,6 +1895,7 @@ class ConkyWriter:
         seconds
         """
         self.writeCommand('pid_time_kernelmode', pid)
+        return self
 
     def pid_time_usermode(self, pid):
         """
@@ -1656,86 +1903,107 @@ class ConkyWriter:
         seconds
         """
         self.writeCommand('pid_time_usermode', pid)
+        return self
 
     def pid_time(self, pid):
         """ Sum of $pid_time_kernelmode and $pid_time_usermode """
         self.writeCommand('pid_time', pid)
+        return self
 
     def pid_uid(self, pid):
         """ The real uid of the process """
         self.writeCommand('pid_uid', pid)
+        return self
 
     def pid_euid(self, pid):
         """ The effective uid of the process """
         self.writeCommand('pid_euid', pid)
+        return self
 
     def pid_suid(self, pid):
         """ The saved set uid of the process """
         self.writeCommand('pid_suid', pid)
+        return self
 
     def pid_fsuid(self, pid):
         """ The file system uid of the process """
         self.writeCommand('pid_fsuid', pid)
+        return self
 
     def pid_gid(self, pid):
         """ The real gid of the process """
         self.writeCommand('pid_gid', pid)
+        return self
 
     def pid_egid(self, pid):
         """ The effective gid of the process """
         self.writeCommand('pid_egid', pid)
+        return self
 
     def pid_sgid(self, pid):
         """ The saved set gid of the process """
         self.writeCommand('pid_sgid', pid)
+        return self
 
     def pid_fsgid(self, pid):
         """ The file system gid of the process """
         self.writeCommand('pid_fsgid', pid)
+        return self
 
     def pid_vmpeak(self, pid):
         """ Peak virtual memory size of the process """
         self.writeCommand('pid_vmpeak', pid)
+        return self
 
     def pid_vmsize(self, pid):
         """ Virtual memory size of the process """
         self.writeCommand('pid_vmsize', pid)
+        return self
 
     def pid_vmlck(self, pid):
         """ Locked memory size of the process """
         self.writeCommand('pid_vmlck', pid)
+        return self
 
     def pid_vmhwm(self, pid):
         """ Peak resident set size ("high water mark") of the process """
         self.writeCommand('pid_vmhwm', pid)
+        return self
 
     def pid_vmrss(self, pid):
         """ Resident set size of the process """
         self.writeCommand('pid_vmrss', pid)
+        return self
 
     def pid_vmdata(self, pid):
         """ Data segment size of the process """
         self.writeCommand('pid_vmdata', pid)
+        return self
 
     def pid_vmstk(self, pid):
         """ Stack segment size of the process """
         self.writeCommand('pid_vmstk', pid)
+        return self
 
     def pid_vmexe(self, pid):
         """ Text segment size of the process """
         self.writeCommand('pid_vmexe', pid)
+        return self
 
     def pid_vmlib(self, pid):
         """ Shared library code size of the process """
         self.writeCommand('pid_vmlib', pid)
+        return self
 
     def pid_vmpte(self, pid):
         """ Page table entries size of the process """
         self.writeCommand('pid_vmpte', pid)
+        return self
 
     def pid_write(self, pid):
         """ Total number of bytes written by the process """
         self.writeCommand('pid_write', pid)
+        return self
 
     def platform(self, type, n, dev=None, factor=None, offset=None):
         """
@@ -1749,6 +2017,7 @@ class ConkyWriter:
         decimal values (i.e. contain at least one decimal place).
         """
         self.writeCommand('platform', [type, n, dev, factor, offset])
+        return self
 
     def pop3_unseen(self, args=None):
         """
@@ -1761,6 +2030,7 @@ class ConkyWriter:
         to enter the password when Conky starts.
         """
         self.writeCommand('pop3_unseen', args)
+        return self
 
     def pop3_used(self, args=None):
         """
@@ -1773,6 +2043,7 @@ class ConkyWriter:
         you will be prompted to enter the password when Conky starts.
         """
         self.writeCommand('pop3_used', args)
+        return self
 
     def pre_exec(self, shell, command):
         """
@@ -1780,10 +2051,12 @@ class ConkyWriter:
         puts output as text.
         """
         self.writeCommand('pre_exec', [shell, command])
+        return self
 
     def processes(self):
         """ Total processes (sleeping and running) """
         self.writeCommand('processes')
+        return self
 
     def read_tcp(self, port, host=None):
         """
@@ -1791,6 +2064,7 @@ class ConkyWriter:
         char available at the moment and shows them.
         """
         self.writeCommand('read_tcp', [host, port])
+        return self
 
     def replied_mails(self, maildir=None):
         """
@@ -1799,6 +2073,7 @@ class ConkyWriter:
         -1.
         """
         self.writeCommand('replied_mails', maildir)
+        return self
 
     def rss(self, uri, interval, action, numPar=None, space=None):
         """
@@ -1819,14 +2094,17 @@ class ConkyWriter:
         elif action == 'item_titles':
             parameters.append(space)
         self.writeCommand('rss', parameters)
+        return self
 
     def running_processes(self):
         """ Running processes (not sleeping), requires Linux 2.6 """
         self.writeCommand('running_processes')
+        return self
 
     def running_threads(self):
         """ Number of running (runnable) threads. Linux only. """
         self.writeCommand('running_threads')
+        return self
 
     def scroll(self, length, text, step=None):
         """
@@ -1839,6 +2117,7 @@ class ConkyWriter:
         and the start of text will be separated by 'length' number of spaces.
         """
         self.writeCommand('scroll', [length, step, text])
+        return self
 
     def seen_mails(self, maildir=None):
         """
@@ -1847,10 +2126,12 @@ class ConkyWriter:
         -1.
         """
         self.writeCommand('seen_mails', maildir)
+        return self
 
     def shadecolor(self, color=None):
         """ Change shading color """
         self.writeCommand('shadecolor', color)
+        return self
 
     def smapi(self, args=None):
         """
@@ -1861,6 +2142,7 @@ class ConkyWriter:
         smapi_* variables instead.
         """
         self.writeCommand('smapi', args)
+        return self
 
     def smapi_bat_bar(self, index=None, size=None):
         """
@@ -1871,6 +2153,7 @@ class ConkyWriter:
         if len(size) != 2:
             raise ValueError('Size parameter should be a 2-dimensional tuple')
         self.writeCommand('smapi_bat_bar')
+        return self
 
     def smapi_bat_perc(self, index=None):
         """
@@ -1879,6 +2162,7 @@ class ConkyWriter:
         supports the 'use_spacer' configuration option.
         """
         self.writeCommand('smapi_bat_perc', index)
+        return self
 
     def smapi_bat_power(self, index):
         """
@@ -1888,6 +2172,7 @@ class ConkyWriter:
         charging (positive) or discharging (negative) state.
         """
         self.writeCommand('smapi_bat_power', index)
+        return self
 
     def smapi_bat_temp(self, index):
         """
@@ -1896,6 +2181,7 @@ class ConkyWriter:
         original read out value is being converted from milli degree Celsius.
         """
         self.writeCommand('smapi_bat_temp', index)
+        return self
 
     def sony_fanspeed(self):
         """
@@ -1903,34 +2189,42 @@ class ConkyWriter:
         support is enabled. Linux only.
         """
         self.writeCommand('sony_fanspeed')
+        return self
 
     def stippled_hr(self, space=None):
         """ Stippled (dashed) horizontal line """
         self.writeCommand('stippled_hr', space)
+        return self
 
     def swap(self):
         """ Amount of swap in use """
         self.writeCommand('swap')
+        return self
 
     def swapbar(self, size=None):
         """ Bar that shows amount of swap in use """
         self.writeCommand('swapbar', size)
+        return self
 
     def swapfree(self):
         """ Amount of free swap """
         self.writeCommand('swapfree')
+        return self
 
     def swapmax(self):
         """ Total amount of swap """
         self.writeCommand('swapmax')
+        return self
 
     def swapperc(self):
         """ Percentage of swap in use """
         self.writeCommand('swapperc')
+        return self
 
     def sysname(self):
         """ System name, Linux for example """
         self.writeCommand('sysname')
+        return self
 
     def tab(self, size=None):
         """
@@ -1938,6 +2232,7 @@ class ConkyWriter:
         unit is pixels for both arguments.
         """
         self.writeCommand('tab', size)
+        return self
 
     def tail(self, logfile, lines, next_check=None):
         """
@@ -1948,6 +2243,7 @@ class ConkyWriter:
         if not exists(logfile):
             raise IOError('File %s does not exists' % logfile)
         self.writeCommand('tail', [logfile, lines, next_check])
+        return self
 
     def tcp_portmon(self, port_begin, port_end, item, index=None):
         """
@@ -1977,6 +2273,7 @@ class ConkyWriter:
         other words, the program avoids creating redundant monitors.
         """
         self.writeCommand('tcp_portmon', [port_begin, port_end, item, index])
+        return self
 
     def templateN(self, arg1=None):
         """
@@ -2000,6 +2297,7 @@ class ConkyWriter:
         if n < 0 or n > 9:
             raise ValueError('arg1 should be an integer between 0 and 9 (inclusive)')
         self.writeCommand('templateN', arg1)
+        return self
 
     def texeci(self, interval, command):
         """
@@ -2014,16 +2312,19 @@ class ConkyWriter:
         behaviour if used this way.
         """
         self.writeCommand('texeci', [interval, command])
+        return self
 
     def threads(self):
         """ Total threads """
         self.writeCommand('threads')
+        return self
 
     def time(self, format=None):
         """
         Local time, see man strftime to get more information about format
         """
         self.writeCommand('time', format)
+        return self
 
     def to_bytes(self, size):
         """
@@ -2032,6 +2333,7 @@ class ConkyWriter:
         just shows 'size'.
         """
         self.writeCommand('to_bytes', size)
+        return self
 
     def top(self, type, num):
         """
@@ -2042,6 +2344,7 @@ class ConkyWriter:
         "io_write". There can be a max of 10 processes listed.
         """
         self.writeCommand('top', [type, num])
+        return self
 
     def top_io(self, type, num):
         """
@@ -2049,10 +2352,12 @@ class ConkyWriter:
         during the update interval
         """
         self.writeCommand('top_io', [type, num])
+        return self
 
     def top_mem(self, type, num):
         """ Same as top, except sorted by mem usage instead of cpu """
         self.writeCommand('top_mem', [type, num])
+        return self
 
     def top_time(self, type, num):
         """
@@ -2060,6 +2365,7 @@ class ConkyWriter:
         usage
         """
         self.writeCommand('top_time', [type, num])
+        return self
 
     def totaldown(self, net=None):
         """
@@ -2068,10 +2374,12 @@ class ConkyWriter:
         before conky has started.
         """
         self.writeCommand('totaldown', net)
+        return self
 
     def totalup(self, net=None):
         """ Total upload, this one too, may overflow """
         self.writeCommand('totalup', net)
+        return self
 
     def trashed_mails(self, maildir=None):
         """
@@ -2080,6 +2388,7 @@ class ConkyWriter:
         -1.
         """
         self.writeCommand('trashed_mails', maildir)
+        return self
 
     def tztime(self, timezone=None, format=None):
         """
@@ -2089,14 +2398,17 @@ class ConkyWriter:
         /usr/share/zoneinfo. e.g. US/Pacific, Europe/Zurich, etc.
         """
         self.writeCommand('tztime', [timezone, format])
+        return self
 
     def gid_name(self, gid):
         """ Name of group with this gid """
         self.writeCommand('gid_name', gid)
+        return self
 
     def uid_name(self, uid):
         """ Username of user with this uid """
         self.writeCommand('uid_name', uid)
+        return self
 
     def unflagged_mails(self, maildir=None):
         """
@@ -2105,6 +2417,7 @@ class ConkyWriter:
         return -1.
         """
         self.writeCommand('unflagged_mails', maildir)
+        return self
 
     def unforwarded_mails(self, maildir=None):
         """
@@ -2113,6 +2426,7 @@ class ConkyWriter:
         return -1.
         """
         self.writeCommand('unforwarded_mails', maildir)
+        return self
 
     def unreplied_mails(self, maildir=None):
         """
@@ -2121,6 +2435,7 @@ class ConkyWriter:
         return -1.
         """
         self.writeCommand('unreplied_mails', maildir)
+        return self
 
     def unseen_mails(self, maildir=None):
         """
@@ -2129,18 +2444,22 @@ class ConkyWriter:
         -1.
         """
         self.writeCommand('unseen_mails', maildir)
+        return self
 
     def updates(self, n):
         """ for debugging """
         self.writeCommand('updates', n)
+        return self
 
     def upspeed(self, net=None):
         """ Upload speed in suitable IEC units """
         self.writeCommand('upspeed', net)
+        return self
 
     def upspeedf(self, net=None):
         """ Upload speed in KiB with one decimal """
         self.writeCommand('upspeedf', net)
+        return self
 
     def upspeedgraph(self, netdev=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
         """
@@ -2159,40 +2478,49 @@ class ConkyWriter:
         if l:
             parameters.append('-l')
         self.writeCommand('upspeedgraph', parameters)
+        return self
 
     def uptime(self):
         """ Uptime """
         self.writeCommand('uptime')
+        return self
 
     def uptime_short(self):
         """ Uptime in a shorter format """
         self.writeCommand('uptime_short')
+        return self
 
     def user_names(self):
         """ Lists the names of the users logged in """
         self.writeCommand('user_names')
+        return self
 
     def user_number(self):
         """ Number of users logged in """
         self.writeCommand('user_number')
+        return self
 
     def user_terms(self):
         """ Lists the consoles in use """
         self.writeCommand('user_terms')
+        return self
 
     def user_times(self):
         """ Lists how long users have been logged in for """
         self.writeCommand('user_times')
+        return self
 
     def user_time(self, console):
         """
         Lists how long the user for the given console has been logged in for
         """
         self.writeCommand('user_time', console)
+        return self
 
     def utime(self, format=None):
         """ Display time in UTC (universal coordinate time). """
         self.writeCommand('utime', format)
+        return self
 
     def voffset(self, pixels=None):
         """
@@ -2200,6 +2528,7 @@ class ConkyWriter:
         overlap. See also $offset.
         """
         self.writeCommand('voffset', pixels)
+        return self
 
     def voltage_mv(self, n=None):
         """
@@ -2207,6 +2536,7 @@ class ConkyWriter:
         parameter defaults to 1.
         """
         self.writeCommand('voltage_mv', n)
+        return self
 
     def voltage_v(self, n=None):
         """
@@ -2214,6 +2544,7 @@ class ConkyWriter:
         parameter defaults to 1.
         """
         self.writeCommand('voltage_v', n)
+        return self
 
     def weather(self, uri, locid, data_type, interval=None):
         """
@@ -2248,6 +2579,7 @@ class ConkyWriter:
         EXPERIMENTAL and can be subject to many future changes.
         """
         self.writeCommand('weather', [uri, locid, data_type, interval])
+        return self
 
     def weather_forecast(self, uri, locid, day, data_type, interval=None):
         """
@@ -2273,18 +2605,22 @@ class ConkyWriter:
         changes.
         """
         self.writeCommand('weather_forecast', [uri, locid, day, data_type, interval])
+        return self
 
     def wireless_ap(self, net=None):
         """ Wireless access point MAC address (Linux only) """
         self.writeCommand('wireless_ap', net)
+        return self
 
     def wireless_bitrate(self, net=None):
         """ Wireless bitrate (ie 11 Mb/s) (Linux only) """
         self.writeCommand('wireless_bitrate', net)
+        return self
 
     def wireless_essid(self, net=None):
         """ Wireless access point ESSID (Linux only) """
         self.writeCommand('wireless_essid', net)
+        return self
 
     def wireless_link_bar(self, size=None, net=None):
         """
@@ -2294,80 +2630,99 @@ class ConkyWriter:
         if len(size) != 2:
             raise ValueError('Size parameter should be a 2-dimensional tuple')
         self.writeCommand('wireless_link_bar', [size, net])
+        return self
 
     def wireless_link_qual(self, net=None):
         """ Wireless link quality (Linux only) """
         self.writeCommand('wireless_link_qual', net)
+        return self
 
     def wireless_link_qual_max(self, net=None):
         """ Wireless link quality maximum value (Linux only) """
         self.writeCommand('wireless_link_qual_max', net)
+        return self
 
     def wireless_link_qual_perc(self, net=None):
         """ Wireless link quality in percents (Linux only) """
         self.writeCommand('wireless_link_qual_perc', net)
+        return self
 
     def wireless_mode(self, net=None):
         """ Wireless mode (Managed/Ad-Hoc/Master) (Linux only) """
         self.writeCommand('wireless_mode', net)
+        return self
 
     def words(self, textfile):
         """ Displays the number of words in the given file """
         if not exists(textfile):
             raise IOError('File %s does not exists' % textfile)
         self.writeCommand('words', textfile)
+        return self
 
     def xmms2_album(self):
         """ Album in current XMMS2 song """
         self.writeCommand('xmms2_album')
+        return self
 
     def xmms2_artist(self):
         """ Artist in current XMMS2 song """
         self.writeCommand('xmms2_artist')
+        return self
 
     def xmms2_bar(self, size=None):
         """ Bar of XMMS2's progress """
         self.writeCommand('xmms2_bar', size)
+        return self
 
     def xmms2_bitrate(self):
         """ Bitrate of current song """
         self.writeCommand('xmms2_bitrate')
+        return self
 
     def xmms2_comment(self):
         """ Comment in current XMMS2 song """
         self.writeCommand('xmms2_comment')
+        return self
 
     def xmms2_date(self):
         """ Returns song's date. """
         self.writeCommand('xmms2_date')
+        return self
 
     def xmms2_duration(self):
         """ Duration of current song """
         self.writeCommand('xmms2_duration')
+        return self
 
     def xmms2_elapsed(self):
         """ Song's elapsed time """
         self.writeCommand('xmms2_elapsed')
+        return self
 
     def xmms2_genre(self):
         """ Genre in current XMMS2 song """
         self.writeCommand('xmms2_genre')
+        return self
 
     def xmms2_id(self):
         """ XMMS2 id of current song """
         self.writeCommand('xmms2_id')
+        return self
 
     def xmms2_percent(self):
         """ Percent of song's progress """
         self.writeCommand('xmms2_percent')
+        return self
 
     def xmms2_playlist(self):
         """ Returns the XMMS2 playlist. """
         self.writeCommand('xmms2_playlist')
+        return self
 
     def xmms2_size(self):
         """ Size of current song """
         self.writeCommand('xmms2_size')
+        return self
 
     def xmms2_smart(self):
         """
@@ -2375,23 +2730,29 @@ class ConkyWriter:
         depending on whats available
         """
         self.writeCommand('xmms2_smart')
+        return self
 
     def xmms2_status(self):
         """ XMMS2 status (Playing, Paused, Stopped, or Disconnected) """
         self.writeCommand('xmms2_status')
+        return self
 
     def xmms2_timesplayed(self):
         """ Number of times a song was played (presumably). """
         self.writeCommand('xmms2_timesplayed')
+        return self
 
     def xmms2_title(self):
         """ Title in current XMMS2 song """
         self.writeCommand('xmms2_title')
+        return self
 
     def xmms2_tracknr(self):
         """ Track number in current XMMS2 song """
         self.writeCommand('xmms2_tracknr')
+        return self
 
     def xmms2_url(self):
         """ Full path to current song """
         self.writeCommand('xmms2_url')
+        return self
