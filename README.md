@@ -1,5 +1,7 @@
 # Conky Util
 
+[![Latest Version](http://img.shields.io/pypi/v/Markdown.svg)](https://pypi.python.org/pypi/conkyutil/)
+
 Simple python package that provides tools for script that aims to run under
 Conky context. Most of it has been generated using
 [apiwriter.py](https://github.com/Faylixe/conkyutil/blob/master/apiwriter.py)
