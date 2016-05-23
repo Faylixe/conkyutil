@@ -1,6 +1,9 @@
 
 import sys
 
+from os import exists
+from os.path import join
+
 """ """
 
 class ConkyWriter:
@@ -41,7 +44,16 @@ class ConkyWriter:
         self.write('${%s %s}' % (command, arguments))
 
 	def acpiacadapter(self, adapter=None):
-		""" ACPI ac adapter state. On linux, the adapter option specifies the subfolder of /sys/class/power_supply containing the state information (tries "AC" and "ADP1" if there is no argument given). Non-linux systems ignore it. """
+		"""
+        ACPI ac adapter state. On linux, the adapter option specifies the
+        subfolder of /sys/class/power_supply containing the state information
+        (tries "AC" and "ADP1" if there is no argument given). Non-linux systems
+        ignore it.
+        """
+        if adapter != None:
+            path = join('/sys/class/power_supply', adapter)
+            if not exists(path):
+                raise IOError('adapter parameter %s not valid, should be a subfolder of /sys/class/power_supply' % adapter)
 		self.writeCommand('acpiacadapter', adapter)
 
 	def acpifan(self):
@@ -53,11 +65,15 @@ class ConkyWriter:
 		self.writeCommand('acpitemp')
 
 	def addr(self, interface=None):
-		""" IP address for an interface, or "No Address" if no address is assigned. """
+		"""
+        IP address for an interface, or "No Address" if no address is assigned.
+        """
 		self.writeCommand('addr', interface)
 
 	def addrs(self, interface=None):
-		""" IP addresses for an interface (if one - works like addr). Linux only. """
+		"""
+        IP addresses for an interface (if one - works like addr). Linux only.
+        """
 		self.writeCommand('addrs', interface)
 
 	def adt746xcpu(self):
@@ -77,7 +93,10 @@ class ConkyWriter:
 		self.writeCommand('alignr', num)
 
 	def apcupsd(self, host):
-		""" Sets up the connection to apcupsd daemon. Prints nothing, defaults to localhost:3551 """
+		"""
+        Sets up the connection to apcupsd daemon. Prints nothing, defaults to
+        localhost:3551
+        """
 		self.writeCommand('apcupsd', host)
 
 	def apcupsd_cable(self):
@@ -105,11 +124,19 @@ class ConkyWriter:
 		self.writeCommand('apcupsd_loadbar')
 
 	def apcupsd_loadgauge(self, size=None):
-		""" Gauge that shows current load. Size parameter should be a tuple (height, width) """
+		"""
+        Gauge that shows current load. Size parameter should be a tuple
+        (height, width)
+        """
 		self.writeCommand('apcupsd_loadgauge', size)
 
 	def apcupsd_loadgraph(self, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
-		""" History graph of current load. """
+		"""
+        History graph of current load.
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
         parameters = [size, gradientColor1, gradientColor2, scale]
         if t:
             parameters.append('-t')
@@ -150,7 +177,10 @@ class ConkyWriter:
 		self.writeCommand('apm_battery_life')
 
 	def apm_battery_time(self):
-		""" Display remaining APM battery life in hh:mm:ss or "unknown" if AC adapterstatus is on-line or charging (FreeBSD only) """
+		"""
+        Display remaining APM battery life in hh:mm:ss or "unknown" if AC
+        adapterstatus is on-line or charging (FreeBSD only)
+        """
 		self.writeCommand('apm_battery_time')
 
 	def audacious_bar(self, size=None):
@@ -210,23 +240,41 @@ class ConkyWriter:
 		self.writeCommand('audacious_title', maxLength)
 
 	def battery(self, num=None):
-		""" Battery status and remaining percentage capacity of ACPI or APM battery. ACPI battery number can be given as argument (default is BAT0). """
+		"""
+        Battery status and remaining percentage capacity of ACPI or APM battery.
+        ACPI battery number can be given as argument (default is BAT0).
+        """
 		self.writeCommand('battery', num)
 
 	def battery_bar(self):
-		""" Battery percentage remaining of ACPI battery in a bar. ACPI battery number can be given as argument (default is BAT0). """
+		"""
+        Battery percentage remaining of ACPI battery in a bar. ACPI battery
+        number can be given as argument (default is BAT0).
+        """
 		self.writeCommand('battery_bar')
 
 	def battery_percent(self, num=None):
-		""" Battery percentage remaining for ACPI battery. ACPI battery number can be given as argument (default is BAT0). """
+		"""
+        Battery percentage remaining for ACPI battery. ACPI battery number can
+        be given as argument (default is BAT0).
+        """
 		self.writeCommand('battery_percent', num)
 
 	def battery_short(self, num=None):
-		""" Battery status and remaining percentage capacity of ACPI or APM battery. ACPI battery number can be given as argument (default is BAT0). This mode display a short status, which means that C is displayed instead of charging, D for discharging, F for full, N for not present, E for empty and U for unknown. """
+		"""
+        Battery status and remaining percentage capacity of ACPI or APM battery.
+        ACPI battery number can be given as argument (default is BAT0). This
+        mode display a short status, which means that C is displayed instead of
+        charging, D for discharging, F for full, N for not present, E for empty
+        and U for unknown.
+        """
 		self.writeCommand('battery_short', num)
 
 	def battery_time(self, num=None):
-		""" Battery charge/discharge time remaining of ACPI battery. ACPI battery number can be given as argument (default is BAT0). """
+		"""
+        Battery charge/discharge time remaining of ACPI battery. ACPI battery
+        number can be given as argument (default is BAT0).
+        """
 		self.writeCommand('battery_time', num)
 
 	def startBlink(self):
@@ -274,16 +322,33 @@ class ConkyWriter:
 		self.writeCommand('cmdline_to_pid', search)
 
 	def color(self, color=None):
-		""" Change drawing color to 'color' which is a name of a color or a hexcode preceded with # (for example #0A1B2C ). If you use ncurses only the following colors are supported: red,green,yellow,blue,magenta,cyan,black,white. """
+		"""
+        Change drawing color to 'color' which is a name of a color or a hexcode
+        preceded with # (for example #0A1B2C ). If you use ncurses only the
+        following colors are supported: red, green, yellow, blue, magenta, cyan,
+        black, white.
+        """
 		self.writeCommand('color', color)
 
 	def colorN(self, n):
-		""" Change drawing color to colorN configuration option, where N is a digit between 0 and 9, inclusively. """
-        # TODO : Check if between 0 and 9
+		"""
+        Change drawing color to colorN configuration option, where N is a digit
+        between 0 and 9, inclusively.
+        """
+        v = int(n)
+        if v < 0 or v > 9:
+            raise ValueError('n should be an integer between 0 and 9 (inclusive)')
 		self.writeCommand('color%d' % n)
 
 	def combine(self, var1, var2):
-		""" Places the lines of var2 to the right of the lines of var1 separated by the chars that are put between var1 and var2. For example: ${combine ${head /proc/cpuinfo 2} - ${head /proc/meminfo 1}} gives as output "cpuinfo_line1 - meminfo_line1" on line 1 and "cpuinfo_line2 -" on line 2. $combine vars can also be nested to place more vars next to each other. """
+		"""
+        Places the lines of var2 to the right of the lines of var1 separated by
+        the chars that are put between var1 and var2. For example:
+        ${combine ${head /proc/cpuinfo 2} - ${head /proc/meminfo 1}} gives as
+        output "cpuinfo_line1 - meminfo_line1" on line 1 and "cpuinfo_line2 -"
+        on line 2. $combine vars can also be nested to place more vars next to
+        each other.
+        """
 		self.writeCommand('combine', [var1, var2])
 
 	def conky_build_arch(self):
@@ -299,19 +364,45 @@ class ConkyWriter:
 		self.writeCommand('conky_version')
 
 	def cpu(self, n=None):
-		""" CPU usage in percents. For SMP machines, the CPU number can be provided as an argument. ${cpu cpu0} is the total usage, and ${cpu cpuX} (X >= 1) are individual CPUs. """
+		"""
+        CPU usage in percents. For SMP machines, the CPU number can be provided
+        as an argument. ${cpu cpu0} is the total usage, and ${cpu cpuX} (X >= 1)
+        are individual CPUs.
+        """
 		self.writeCommand('cpu', n)
 
 	def cpubar(self, n=None, size=None):
-		""" Bar that shows CPU usage, height is bar's height in pixels. See $cpu for more info on SMP. """
+		"""
+        Bar that shows CPU usage, height is bar's height in pixels. See $cpu for
+        more info on SMP.
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
 		self.writeCommand('cpubar', [n, size])
 
 	def cpugauge(self, n=None, size=None):
-		""" Elliptical gauge that shows CPU usage, height and width are gauge's vertical and horizontal axis respectively. See $cpu for more info on SMP. """
+		"""
+        Elliptical gauge that shows CPU usage, height and width are gauge's
+        vertical and horizontal axis respectively. See $cpu for more info on
+        SMP.
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
 		self.writeCommand('cpugauge', [n, size])
 
 	def cpugraph(self, n=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
-		""" CPU usage graph, with optional colours in hex, minus the #. See $cpu for more info on SMP. Uses a logarithmic scale (to see small numbers) when you use the -l switch. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). """
+		"""
+        CPU usage graph, with optional colours in hex, minus the #. See $cpu for
+        more info on SMP. Uses a logarithmic scale (to see small numbers) when
+        you use the -l switch. Takes the switch '-t' to use a temperature
+        gradient, which makes the gradient values change depending on the
+        amplitude of a particular graph value (try it and see).
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
         parameters = [n, size, gradientColor1, gradientColor2, scale]
         if t:
             parameters.append('-t')
@@ -320,27 +411,47 @@ class ConkyWriter:
 		self.writeCommand('cpugraph')
 
 	def curl(self, url, interval=None):
-		""" Download data from URI using Curl at the specified interval. The interval may be a floating point value greater than 0, otherwise defaults to 15 minutes. Most useful when used in conjunction with Lua and the Lua API. This object is threaded, and once a thread is created it can't be explicitly destroyed. One thread will run for each URI specified. You can use any protocol that Curl supports. """
+		""" Download data from URI using Curl at the specified interval. The
+        interval may be a floating point value greater than 0, otherwise
+        defaults to 15 minutes. Most useful when used in conjunction with Lua
+        and the Lua API. This object is threaded, and once a thread is created
+        it can't be explicitly destroyed. One thread will run for each URI
+        specified. You can use any protocol that Curl supports.
+        """
 		self.writeCommand('curl', [url, interval])
 
 	def desktop(self):
-		""" Number of the desktop on which conky is running or the message "Not running in X" if this is the case. """
+		"""
+        Number of the desktop on which conky is running or the message "Not
+        running in X" if this is the case.
+        """
 		self.writeCommand('desktop')
 
 	def desktop_name(self):
-		""" Name of the desktop on which conky is running or the message "Not running in X" if this is the case. """
+		"""
+        Name of the desktop on which conky is running or the message "Not
+        unning in X" if this is the case.
+        """
 		self.writeCommand('desktop_name')
 
 	def desktop_number(self):
-		""" Number of desktops or the message "Not running in X" if this is the case. """
+		"""
+        Number of desktops or the message "Not running in X" if this is the case.
+        """
 		self.writeCommand('desktop_number')
 
 	def disk_protect(self, device):
-		""" Disk protection status, if supported (needs kernel-patch). Prints either "frozen" or "free " (note the padding). """
+		"""
+        Disk protection status, if supported (needs kernel-patch). Prints either
+        "frozen" or "free " (note the padding).
+        """
 		self.writeCommand('disk_protect', device)
 
 	def diskio(self, device=None):
-		""" Displays current disk IO. Device is optional, and takes the form of sda for /dev/sda. Individual partitions are allowed. """
+		"""
+        Displays current disk IO. Device is optional, and takes the form of sda
+        for /dev/sda. Individual partitions are allowed.
+        """
 		self.writeCommand('diskio', device)
 
 	def diskio_read(self, device=None):
@@ -352,7 +463,16 @@ class ConkyWriter:
 		self.writeCommand('diskio_write', device)
 
 	def diskiograph(self, device=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
-		""" Disk IO graph, colours defined in hex, minus the #. If scale is non-zero, it becomes the scale for the graph. Uses a logarithmic scale (to see small numbers) when you use -l switch. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). """
+		"""
+        Disk IO graph, colours defined in hex, minus the #. If scale is non-zero,
+        it becomes the scale for the graph. Uses a logarithmic scale (to see
+        small numbers) when you use -l switch. Takes the switch '-t' to use a
+        temperature gradient, which makes the gradient values change depending
+        on the amplitude of a particular graph value (try it and see).
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
         parameters = [device, size, gradientColor1, gradientColor2, scale]
         if t:
             parameters.append('-t')
@@ -361,7 +481,17 @@ class ConkyWriter:
 		self.writeCommand('diskiograph', parameters)
 
 	def diskiograph_read(self, device=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
-		""" Disk IO graph for reads, colours defined in hex, minus the #. If scale is non-zero, it becomes the scale for the graph. Device as in diskio. Uses a logarithmic scale (to see small numbers) when you use -l switch. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). """
+		"""
+        Disk IO graph for reads, colours defined in hex, minus the #. If scale
+        is non-zero, it becomes the scale for the graph. Device as in diskio.
+        Uses a logarithmic scale (to see small numbers) when you use -l switch.
+        Takes the switch '-t' to use a temperature gradient, which makes the
+        gradient values change depending on the amplitude of a particular graph
+        value (try it and see).
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
         parameters = [device, size, gradientColor1, gradientColor2, scale]
         if t:
             parameters.append('-t')
@@ -370,7 +500,17 @@ class ConkyWriter:
 		self.writeCommand('diskiograph_read')
 
 	def diskiograph_write(self, device=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
-		""" Disk IO graph for writes, colours defined in hex, minus the #. If scale is non-zero, it becomes the scale for the graph. Device as in diskio. Uses a logarithmic scale (to see small numbers) when you use -l switch. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). """
+		"""
+        Disk IO graph for writes, colours defined in hex, minus the #. If scale
+        is non-zero, it becomes the scale for the graph. Device as in diskio.
+        Uses a logarithmic scale (to see small numbers) when you use -l switch.
+        Takes the switch '-t' to use a temperature gradient, which makes the
+        gradient values change depending on the amplitude of a particular graph
+        value (try it and see).
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
         parameters = [device, size, gradientColor1, gradientColor2, scale]
         if t:
             parameters.append('-t')
@@ -387,7 +527,16 @@ class ConkyWriter:
 		self.writeCommand('downspeedf', net)
 
 	def downspeedgraph(self, netdev=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
-		""" Download speed graph, colours defined in hex, minus the #. If scale is non-zero, it becomes the scale for the graph. Uses a logarithmic scale (to see small numbers) when you use -l switch. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). """
+		"""
+        Download speed graph, colours defined in hex, minus the #. If scale is
+        non-zero, it becomes the scale for the graph. Uses a logarithmic scale
+        (to see small numbers) when you use -l switch. Takes the switch '-t' to
+        use a temperature gradient, which makes the gradient values change
+        depending on the amplitude of a particular graph value (try it and see).
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
         parameters = [netdev, size, gradientColor1, gradientColor2, scale]
         if t:
             parameters.append('-t')
@@ -396,7 +545,11 @@ class ConkyWriter:
 		self.writeCommand('downspeedgraph', parameters)
 
 	def draft_mails(self, maildir=None):
-		""" Number of mails marked as draft in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
+		"""
+        Number of mails marked as draft in the specified mailbox or mail spool
+        if not. Only maildir type mailboxes are supported, mbox type will return
+        -1.
+        """
 		self.writeCommand('draft_mails', maildir)
 
 	def elseCondition(self):
@@ -424,27 +577,56 @@ class ConkyWriter:
 		self.writeCommand('entropy_poolsize')
 
 	def eval(self, string):
-		""" Evaluates given string according to the rules of TEXT interpretation, i.e. parsing any contained text object specifications into their output, any occuring '$$' into a single '$' and so on. The output is then being parsed again. """
+		"""
+        Evaluates given string according to the rules of TEXT interpretation,
+        i.e. parsing any contained text object specifications into their output,
+        any occuring '$$' into a single '$' and so on. The output is then being
+        parsed again.
+        """
 		self.writeCommand('eval', string)
 
 	def eve(self, api_userid, api_key, character_id):
-		""" Fetches your currently training skill from the Eve Online API servers (http://www.eve-online.com/) and displays the skill along with the remaining training time. """
+		"""
+        Fetches your currently training skill from the Eve Online API servers
+        (http://www.eve-online.com/) and displays the skill along with the
+        remaining training time.
+        """
 		self.writeCommand('eve', [api_userid, api_key, character_id])
 
 	def execCommand(self, command):
-		""" Executes a shell command and displays the output in conky. warning: this takes a lot more resources than other variables. I'd recommend coding wanted behaviour in C and posting a patch. """
+		"""
+        Executes a shell command and displays the output in conky. warning: this
+        takes a lot more resources than other variables. I'd recommend coding
+        wanted behaviour in C and posting a patch.
+        """
 		self.writeCommand('exec', command)
 
 	def execbar(self, command):
-		""" Same as exec, except if the first value return is a value between 0-100, it will use that number for a bar. The size for bars can be controlled via the default_bar_size config setting. """
+		"""
+        Same as exec, except if the first value return is a value between 0-100,
+        it will use that number for a bar. The size for bars can be controlled
+        via the default_bar_size config setting.
+        """
 		self.writeCommand('execbar', command)
 
 	def execgauge(self, command):
-		""" Same as exec, except if the first value returned is a value between 0-100, it will use that number for a gauge. The size for gauges can be controlled via the default_gauge_size config setting. """
+		"""
+        Same as exec, except if the first value returned is a value between
+        0-100, it will use that number for a gauge. The size for gauges can be
+        controlled via the default_gauge_size config setting.
+        """
 		self.writeCommand('execgauge', command)
 
 	def execgraph(self, command, t=False, l=False):
-		""" Same as execbar, but graphs values. Uses a logaritmic scale when the log option (-l switch) is given (to see small numbers). Values still have to be between 0 and 100. The size for graphs can be controlled via the default_graph_size config setting. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). If -t or -l is your first argument, you may need to preceed it by a space (' '). """
+		"""
+        Same as execbar, but graphs values. Uses a logaritmic scale when the log
+        option (-l switch) is given (to see small numbers). Values still have to
+        be between 0 and 100. The size for graphs can be controlled via the
+        default_graph_size config setting. Takes the switch '-t' to use a
+        temperature gradient, which makes the gradient values change depending
+        on the amplitude of a particular graph value (try it and see). If -t or
+        -l is your first argument, you may need to preceed it by a space (' ').
+        """
         parameters = []
         if t:
             parameters.append('-t')
@@ -454,7 +636,10 @@ class ConkyWriter:
 		self.writeCommand('execgraph', parameters)
 
 	def execi(self, interval, command):
-		""" Same as exec but with specific interval. Interval can't be less than update_interval in configuration. See also $texeci """
+		"""
+        Same as exec but with specific interval. Interval can't be less than
+        update_interval in configuration. See also $texeci
+        """
 		self.writeCommand('execi', [interval, command])
 
 	def execibar(self, interval, command):
@@ -466,7 +651,10 @@ class ConkyWriter:
 		self.writeCommand('execigauge', [interval, command])
 
 	def execigraph(self, interval, command, t=False, l=False):
-		""" Same as execgraph, but takes an interval arg and graphs values. If -t or -l is your first argument, you may need to preceed it by a space (' '). """
+		"""
+        Same as execgraph, but takes an interval arg and graphs values. If -t or
+        -l is your first argument, you may need to preceed it by a space (' ').
+        """
         parameters = [interval]
         if t:
             parameters.append('-t')
@@ -476,43 +664,101 @@ class ConkyWriter:
 		self.writeCommand('execigraph', parameters)
 
 	def execp(self, command):
-		""" Executes a shell command and displays the output in conky. warning: this takes a lot more resources than other variables. I'd recommend coding wanted behaviour in C and posting a patch. This differs from $exec in that it parses the output of the command, so you can insert things like ${color red}hi!${color} in your script and have it correctly parsed by Conky. Caveats: Conky parses and evaluates the output of $execp every time Conky loops, and then destroys all the objects. If you try to use anything like $execi within an $execp statement, it will functionally run at the same interval that the $execp statement runs, as it is created and destroyed at every interval. """
+		"""
+        Executes a shell command and displays the output in conky. warning: this
+        takes a lot more resources than other variables. I'd recommend coding
+        wanted behaviour in C and posting a patch. This differs from $exec in
+        that it parses the output of the command, so you can insert things like
+        ${color red}hi!${color} in your script and have it correctly parsed by
+        Conky. Caveats: Conky parses and evaluates the output of $execp every
+        time Conky loops, and then destroys all the objects. If you try to use
+        anything like $execi within an $execp statement, it will functionally
+        run at the same interval that the $execp statement runs, as it is
+        created and destroyed at every interval.
+        """
 		self.writeCommand('execp', command)
 
 	def execpi(self, interval, command):
-		""" Same as execp but with specific interval. Interval can't be less than update_interval in configuration. Note that the output from the $execpi command is still parsed and evaluated at every interval. """
+		"""
+        Same as execp but with specific interval. Interval can't be less than
+        update_interval in configuration. Note that the output from the $execpi
+        command is still parsed and evaluated at every interval.
+        """
 		self.writeCommand('execpi', [interval, command])
 
 	def flagged_mails(self, maildir=None):
-		""" Number of mails marked as flagged in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
+		"""
+        Number of mails marked as flagged in the specified mailbox or mail spool
+        if not. Only maildir type mailboxes are supported, mbox type will return
+        -1.
+        """
 		self.writeCommand('flagged_mails', maildir)
 
 	def font(self, font):
-		""" Specify a different font. This new font will apply to the current line and everything following. You can use a $font with no arguments to change back to the default font (much like with $color) """
+		"""
+        Specify a different font. This new font will apply to the current line
+        and everything following. You can use a $font with no arguments to
+        change back to the default font (much like with $color)
+        """
 		self.writeCommand('font')
 
 	def format_time(self, seconds, format):
-		""" Format time given in seconds. This var only works when the times_in_seconds configuration setting is on. Format is a string that should start and end with a "-char. The "-chars are not part of the output, \w,\d,\h,\m,\s,\(,\) and \\ are replaced by weeks,days,hours,minutes,seconds,(,) and \. If you leave out a unit, it's value will be expressed in the highest unite lower then the one left out. Text between ()-chars will not be visible if a replaced unit in this text is 0. If seconds is a decimal number then you can see the numbers behind the point by using \S followed by a number that specifies the amount of digits behind the point that you want to see (maximum 9). You can also place a 'x' behind \S so you have all digits behind the point and no trailing zero's. (also maximum 9) """
+		"""
+        Format time given in seconds. This var only works when the
+        times_in_seconds configuration setting is on. Format is a string that
+        should start and end with a "-char. The "-chars are not part of the
+        output, \w,\d,\h,\m,\s,\(,\) and \\ are replaced by weeks, days, hours,
+        minutes, seconds,(,) and \. If you leave out a unit, it's value will be
+        expressed in the highest unite lower then the one left out. Text between
+        ()-chars will not be visible if a replaced unit in this text is 0. If
+        seconds is a decimal number then you can see the numbers behind the
+        point by using \S followed by a number that specifies the amount of
+        digits behind the point that you want to see (maximum 9). You can also
+        place a 'x' behind \S so you have all digits behind the point and no
+        trailing zero's. (also maximum 9)
+        """
 		self.writeCommand('format_time', [seconds, format])
 
 	def forwarded_mails(self, maildir=None):
-		""" Number of mails marked as forwarded in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
+		"""
+        Number of mails marked as forwarded in the specified mailbox or mail
+        spool if not. Only maildir type mailboxes are supported, mbox type will
+        return -1.
+        """
 		self.writeCommand('forwarded_mails', maildir)
 
 	def freq(self, n=None):
-		""" Returns CPU #n's frequency in MHz. CPUs are counted from 1. If omitted, the parameter defaults to 1. """
+		"""
+        Returns CPU #n's frequency in MHz. CPUs are counted from 1. If omitted,
+        the parameter defaults to 1.
+        """
 		self.writeCommand('freq', n)
 
 	def freq_g(self, n=None):
-		""" Returns CPU #n's frequency in GHz. CPUs are counted from 1. If omitted, the parameter defaults to 1. """
+		"""
+        Returns CPU #n's frequency in GHz. CPUs are counted from 1. If omitted,
+        the parameter defaults to 1.
+        """
 		self.writeCommand('freq_g', n)
 
 	def fs_bar(self, fs, size=None):
-		""" Bar that shows how much space is used on a file system. height is the height in pixels. fs is any file on that file system. """
+		"""
+        Bar that shows how much space is used on a file system. height is the
+        height in pixels. fs is any file on that file system.
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
 		self.writeCommand('fs_bar', [fs, size])
 
 	def fs_bar_free(self, fs, size=None):
-		""" Bar that shows how much space is free on a file system. height is the height in pixels. fs is any file on that file system. """
+		"""
+        Bar that shows how much space is free on a file system. height is the
+        height in pixels. fs is any file on that file system.
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
 		self.writeCommand('fs_bar_free', [fs, size])
 
 	def fs_free(self, fs=None):
@@ -544,75 +790,146 @@ class ConkyWriter:
 		self.writeCommand('goto', x)
 
 	def gw_iface(self):
-		""" Displays the default route's interface or "multiple"/"none" accordingly. """
+		"""
+        Displays the default route's interface or "multiple"/"none" accordingly.
+        """
 		self.writeCommand('gw_iface')
 
 	def gw_ip(self):
-		""" Displays the default gateway's IP or "multiple"/"none" accordingly. """
+		"""
+        Displays the default gateway's IP or "multiple"/"none" accordingly.
+        """
 		self.writeCommand('gw_ip')
 
 	def hddtemp(self, dev=None):
-		""" Displays temperature of a selected hard disk drive as reported by the hddtemp daemon. Use hddtemp_host and hddtemp_port to specify a host and port for all hddtemp objects. If no dev parameter is given, the first disk returned by the hddtemp daemon is used. """
+		"""
+        Displays temperature of a selected hard disk drive as reported by the
+        hddtemp daemon. Use hddtemp_host and hddtemp_port to specify a host and
+        port for all hddtemp objects. If no dev parameter is given, the first
+        disk returned by the hddtemp daemon is used.
+        """
 		self.writeCommand('hddtemp', dev)
 
 	def head(self, logfile, lines, next_check=None):
-		""" Displays first N lines of supplied text file. The file is checked every 'next_check' update. If next_check is not supplied, Conky defaults to 2. Max of 30 lines can be displayed, or until the text buffer is filled. """
+		"""
+        Displays first N lines of supplied text file. The file is checked every
+        'next_check' update. If next_check is not supplied, Conky defaults to 2.
+        Max of 30 lines can be displayed, or until the text buffer is filled.
+        """
+        if not exists(logfile):
+            raise IOError('File %s does not exists' % logfile)
 		self.writeCommand('head', [logfile, lines, next_check])
 
 	def hr(self, height=None):
 		""" Horizontal line, height is the height in pixels """
 		self.writeCommand('hr', height)
 
-	def hwmon(self, type, n, device=None):
-		""" Hwmon sensor from sysfs (Linux 2.6). Parameter dev may be omitted if you have only one hwmon device. Parameter type is either 'in' or 'vol' meaning voltage; 'fan' meaning fan; 'temp' meaning temperature. Parameter n is number of the sensor. See /sys/class/hwmon/ on your local computer. The optional arguments 'factor' and 'offset' allow precalculation of the raw input, which is being modified as follows: 'input = input * factor + offset'. Note that they have to be given as decimal values (i.e. contain at least one decimal place). """
-		self.writeCommand('hwmon')
+	def hwmon(self, type, n, dev=None, factor=None, offset=None):
+		"""
+        Hwmon sensor from sysfs (Linux 2.6). Parameter dev may be omitted if you
+        have only one hwmon device. Parameter type is either 'in' or 'vol'
+        meaning voltage; 'fan' meaning fan; 'temp' meaning temperature.
+        Parameter n is number of the sensor. See /sys/class/hwmon/ on your local
+        computer. The optional arguments 'factor' and 'offset' allow
+        precalculation of the raw input, which is being modified as follows:
+        'input = input * factor + offset'. Note that they have to be given as
+        decimal values (i.e. contain at least one decimal place).
+        """
+		self.writeCommand('hwmon', [type, n, dev, factor, offset])
 
-	def i2c(self):
-		""" I2C sensor from sysfs (Linux 2.6). Parameter dev may be omitted if you have only one I2C device. Parameter type is either 'in' or 'vol' meaning voltage; 'fan' meaning fan; 'temp' meaning temperature. Parameter n is number of the sensor. See /sys/bus/i2c/devices/ on your local computer. The optional arguments 'factor' and 'offset' allow precalculation of the raw input, which is being modified as follows: 'input = input * factor + offset'. Note that they have to be given as decimal values (i.e. contain at least one decimal place). """
-		self.writeCommand('i2c')
+	def i2c(self, type, n, dev=None, factor=None, offset=None):
+		"""
+        I2C sensor from sysfs (Linux 2.6). Parameter dev may be omitted if you
+        have only one I2C device. Parameter type is either 'in' or 'vol' meaning
+        voltage; 'fan' meaning fan; 'temp' meaning temperature. Parameter n is
+        number of the sensor. See /sys/bus/i2c/devices/ on your local computer.
+        The optional arguments 'factor' and 'offset' allow precalculation of the
+        raw input, which is being modified as follows:
+        'input = input * factor + offset'. Note that they have to be given as
+        decimal values (i.e. contain at least one decimal place).
+        """
+		self.writeCommand('i2c', [type, n, dev, factor, offset])
 
 	def i8k_ac_status(self):
-		""" If running the i8k kernel driver for Inspiron laptops, displays whether ac power is on, as listed in /proc/i8k (translated to human-readable). Beware that this is by default not enabled by i8k itself. """
+		"""
+        If running the i8k kernel driver for Inspiron laptops, displays whether
+        ac power is on, as listed in /proc/i8k (translated to human-readable).
+        Beware that this is by default not enabled by i8k itself.
+        """
 		self.writeCommand('i8k_ac_status')
 
 	def i8k_bios(self):
-		""" If running the i8k kernel driver for Inspiron laptops, displays the bios version as listed in /proc/i8k. """
+		"""
+        If running the i8k kernel driver for Inspiron laptops, displays the bios
+        version as listed in /proc/i8k.
+        """
 		self.writeCommand('i8k_bios')
 
 	def i8k_buttons_status(self):
-		""" If running the i8k kernel driver for Inspiron laptops, displays the volume buttons status as listed in /proc/i8k. """
+		"""
+        If running the i8k kernel driver for Inspiron laptops, displays the
+        volume buttons status as listed in /proc/i8k.
+        """
 		self.writeCommand('i8k_buttons_status')
 
 	def i8k_cpu_temp(self):
-		""" If running the i8k kernel driver for Inspiron laptops, displays the cpu temperature in Celsius, as reported by /proc/i8k. """
+		"""
+        If running the i8k kernel driver for Inspiron laptops, displays the cpu
+        temperature in Celsius, as reported by /proc/i8k.
+        """
 		self.writeCommand('i8k_cpu_temp')
 
 	def i8k_left_fan_rpm(self):
-		""" If running the i8k kernel driver for Inspiron laptops, displays the left fan's rate of rotation, in revolutions per minute as listed in /proc/i8k. Beware, some laptops i8k reports these fans in reverse order. """
+		"""
+        If running the i8k kernel driver for Inspiron laptops, displays the left
+        fan's rate of rotation, in revolutions per minute as listed in
+        /proc/i8k. Beware, some laptops i8k reports these fans in reverse order.
+        """
 		self.writeCommand('i8k_left_fan_rpm')
 
 	def i8k_left_fan_status(self):
-		""" If running the i8k kernel driver for Inspiron laptops, displays the left fan status as listed in /proc/i8k (translated to human-readable). Beware, some laptops i8k reports these fans in reverse order. """
+		"""
+        If running the i8k kernel driver for Inspiron laptops, displays the left
+        fan status as listed in /proc/i8k (translated to human-readable).
+        Beware, some laptops i8k reports these fans in reverse order.
+        """
 		self.writeCommand('i8k_left_fan_status')
 
 	def i8k_right_fan_rpm(self):
-		""" If running the i8k kernel driver for Inspiron laptops, displays the right fan's rate of rotation, in revolutions per minute as listed in /proc/i8k. Beware, some laptops i8k reports these fans in reverse order. """
+		"""
+        If running the i8k kernel driver for Inspiron laptops, displays the
+        right fan's rate of rotation, in revolutions per minute as listed in
+        /proc/i8k. Beware, some laptops i8k reports these fans in reverse order.
+        """
 		self.writeCommand('i8k_right_fan_rpm')
 
 	def i8k_right_fan_status(self):
-		""" If running the i8k kernel driver for Inspiron laptops, displays the right fan status as listed in /proc/i8k (translated to human-readable). Beware, some laptops i8k reports these fans in reverse order. """
+		"""
+        If running the i8k kernel driver for Inspiron laptops, displays the
+        right fan status as listed in /proc/i8k (translated to human-readable).
+        Beware, some laptops i8k reports these fans in reverse order.
+        """
 		self.writeCommand('i8k_right_fan_status')
 
 	def i8k_serial(self):
-		""" If running the i8k kernel driver for Inspiron laptops, displays your laptop serial number as listed in /proc/i8k. """
+		"""
+        If running the i8k kernel driver for Inspiron laptops, displays your
+        laptop serial number as listed in /proc/i8k.
+        """
 		self.writeCommand('i8k_serial')
 
 	def i8k_version(self):
-		""" If running the i8k kernel driver for Inspiron laptops, displays the version formatting of /proc/i8k. """
+		"""
+        If running the i8k kernel driver for Inspiron laptops, displays the
+        version formatting of /proc/i8k.
+        """
 		self.writeCommand('i8k_version')
 
 	def ibm_brightness(self):
-		""" If running the IBM ACPI, displays the brigtness of the laptops's LCD (0-7). """
+		"""
+        If running the IBM ACPI, displays the brigtness of the laptops's LCD
+        0-7).
+        """
 		self.writeCommand('ibm_brightness')
 
 	def ibm_fan(self):
@@ -620,15 +937,23 @@ class ConkyWriter:
 		self.writeCommand('ibm_fan')
 
 	def ibm_temps(self, n):
-		""" If running the IBM ACPI, displays the temperatures from the IBM temperature sensors (N=0..7) Sensor 0 is on the CPU, 3 is on the GPU. """
+		"""
+        If running the IBM ACPI, displays the temperatures from the IBM
+        temperature sensors (N=0..7) Sensor 0 is on the CPU, 3 is on the GPU.
+        """
 		self.writeCommand('ibm_temps', n)
 
 	def ibm_volume(self):
-		""" If running the IBM ACPI, displays the "master" volume, controlled by the volume keys (0-14). """
+		"""
+        If running the IBM ACPI, displays the "master" volume, controlled by the
+        volume keys (0-14).
+        """
 		self.writeCommand('ibm_volume')
 
 	def iconv_start(self, codeset_from, codeset_to):
-		""" Convert text from one codeset to another using GNU iconv. Needs to be stopped with iconv_stop. """
+		""" Convert text from one codeset to another using GNU iconv. Needs to
+        be stopped with iconv_stop.
+        """
 		self.writeCommand('iconv_start', [codeset_from, codeset_to])
 
 	def iconv_stop(self):
@@ -636,71 +961,184 @@ class ConkyWriter:
 		self.writeCommand('iconv_stop')
 
 	def if_empty(self, var):
-		""" if conky variable VAR is empty, display everything between $if_empty and the matching $endif """
+		"""
+        if conky variable VAR is empty, display everything between $if_empty and
+        the matching $endif
+        """
 		self.writeCommand('if_empty', var)
 
 	def if_existing(self, file, search=None):
-		""" if FILE exists, display everything between if_existing and the matching $endif. The optional second parameter checks for FILE containing the specified string and prints everything between $if_existing and the matching $endif. """
+		"""
+        if FILE exists, display everything between if_existing and the matching
+        $endif. The optional second parameter checks for FILE containing the
+        specified string and prints everything between $if_existing and the
+        matching $endif.
+        """
 		self.writeCommand('if_existing', [file, search])
 
 	def if_gw(self):
-		""" if there is at least one default gateway, display everything between $if_gw and the matching $endif """
+		"""
+        if there is at least one default gateway, display everything between
+        $if_gw and the matching $endif
+        """
 		self.writeCommand('if_gw')
 
 	def if_match(self, expression):
-		""" Evaluates the given boolean expression, printing everything between $if_match and the matching $endif depending on whether the evaluation returns true or not. Valid expressions consist of a left side, an operator and a right side. Left and right sides are being parsed for contained text objects before evaluation. Recognised left and right side types are: double - Argument consists of only digits and a single dot.long - Argument consists of only digits.string - Argument is enclosed in quotation marks (")Valid operands are: '>', '<', '>=', '<=', '==', '!='. """
+		"""
+        Evaluates the given boolean expression, printing everything between
+        $if_match and the matching $endif depending on whether the evaluation
+        returns true or not. Valid expressions consist of a left side, an
+        operator and a right side. Left and right sides are being parsed for
+        contained text objects before evaluation. Recognised left and right
+        side types are: double - Argument consists of only digits and a single
+        dot.long - Argument consists of only digits.string - Argument is
+        enclosed in quotation marks (")Valid operands are: '>', '<', '>=', '<=',
+        '==', '!='.
+        """
 		self.writeCommand('if_match', expression)
 
 	def if_mixer_mute(self, mixer=None):
-		""" If mixer exists, display everything between $if_mixer_mute and the matching $endif. If no mixer is specified, "Vol" is used. """
+		"""
+        If mixer exists, display everything between $if_mixer_mute and the
+        matching $endif. If no mixer is specified, "Vol" is used.
+        """
 		self.writeCommand('if_mixer_mute', mixer)
 
 	def if_mounted(self, mountpoint=None):
-		""" if MOUNTPOINT is mounted, display everything between $if_mounted and the matching $endif """
+		"""
+        if MOUNTPOINT is mounted, display everything between $if_mounted and the matching $endif
+        """
 		self.writeCommand('if_mounted', mountpoint)
 
 	def if_mpd_playing(self):
-		""" if mpd is playing or paused, display everything between $if_mpd_playing and the matching $endif """
+		"""
+        if mpd is playing or paused, display everything between $if_mpd_playing
+        and the matching $endif
+        """
 		self.writeCommand('if_mpd_playing')
 
 	def if_running(self, process=None):
-		""" if PROCESS is running, display everything $if_running and the matching $endif. This uses the ``pidof'' command, so the -x switch is also supported. """
+		"""
+        if PROCESS is running, display everything $if_running and the matching
+        $endif. This uses the ``pidof'' command, so the -x switch is also
+        supported.
+        """
 		self.writeCommand('if_running', process)
 
 	def if_smapi_bat_installed(self, index=None):
-		""" when using smapi, if the battery with index INDEX is installed, display everything between $if_smapi_bat_installed and the matching $endif """
+		"""
+        when using smapi, if the battery with index INDEX is installed,
+        display everything between $if_smapi_bat_installed and the matching
+        $endif
+        """
 		self.writeCommand('if_smapi_bat_installed', index)
 
 	def if_up(self, interface=None):
-		""" if INTERFACE exists and is up, display everything between $if_up and the matching $endif """
+		"""
+        if INTERFACE exists and is up, display everything between $if_up and the
+        matching $endif
+        """
 		self.writeCommand('if_up', interface)
 
 	def if_updatenr(self, updatenr=None):
-		""" If it's the UPDATENR-th time that conky updates, display everything between $if_updatenr and the matching $endif. The counter resets when the highest UPDATENR is reached. Example : "{$if_updatenr 1}foo$endif{$if_updatenr 2}bar$endif{$if_updatenr 4}$endif" shows foo 25% of the time followed by bar 25% of the time followed by nothing the other half of the time. """
+		"""
+        If it's the UPDATENR-th time that conky updates, display everything
+        between $if_updatenr and the matching $endif. The counter resets when
+        the highest UPDATENR is reached. Example :
+        "{$if_updatenr 1}foo$endif{$if_updatenr 2}bar$endif{$if_updatenr 4}$endif"
+        shows foo 25% of the time followed by bar 25% of the time followed by
+        nothing the other half of the time.
+        """
 		self.writeCommand('if_updatenr', updatenr)
 
 	def if_xmms2_connected(self):
-		""" Display everything between $if_xmms2_connected and the matching $endif if xmms2 is running. """
+		"""
+        Display everything between $if_xmms2_connected and the matching $endif
+        if xmms2 is running.
+        """
 		self.writeCommand('if_xmms2_connected')
 
-	def image(self):
-		""" Renders an image from the path specified using Imlib2. Takes 4 optional arguments: a position, a size, a no-cache switch, and a cache flush interval. Changing the x,y position will move the position of the image, and changing the WxH will scale the image. If you specify the no-cache flag (-n), the image will not be cached. Alternately, you can specify the -f int switch to specify a cache flust interval for a particular image. Example: ${image /home/brenden/cheeseburger.jpg -p 20,20 -s 200x200} will render 'cheeseburger.jpg' at (20,20) scaled to 200x200 pixels. Conky does not make any attempt to adjust the position (or any other formatting) of images, they are just rendered as per the arguments passed. The only reason $image is part of the TEXT section, is to allow for runtime modifications, through $execp $lua_parse, or some other method. """
+	def image(self, path, position=None, size=None, n=False, interval=None):
+		"""
+        Renders an image from the path specified using Imlib2. Takes 4 optional
+        arguments: a position, a size, a no-cache switch, and a cache flush
+        interval. Changing the x,y position will move the position of the image,
+        and changing the WxH will scale the image. If you specify the no-cache
+        flag (-n), the image will not be cached. Alternately, you can specify
+        the -f int switch to specify a cache flust interval for a particular
+        image. Example:
+        ${image /home/brenden/cheeseburger.jpg -p 20,20 -s 200x200} will render
+        'cheeseburger.jpg' at (20,20) scaled to 200x200 pixels. Conky does not
+        make any attempt to adjust the position (or any other formatting) of
+        images, they are just rendered as per the arguments passed. The only
+        reason $image is part of the TEXT section, is to allow for runtime
+        modifications, through $execp $lua_parse, or some other method.
+        Position argument should be a tuple with (x, y) format.
+        Size argument should be a tuple with (width, height) format.
+        """
+        if not exists(path):
+            raise IOError('Image %s does not exists' % path)
+        parameters = [path]
+        if position != None:
+            if len(position) == 2:
+                parameters.append('-p')
+                parameters.append(position)
+            else:
+                raise ValueError('Position parameter should be a 2-dimensional tuple')
+        if size != None:
+            if len(size) == 2:
+                parameters.append('-s'):
+                parameters.append('%dx%d' % size)
+            else:
+                raise ValueError('Size parameter should be a 2-dimensional tuple')
+        if n:
+            parameters.append('-n')
+        if interval != None:
+            parameters.append('-f')
+            parameters.append(interval)
 		self.writeCommand('image')
 
 	def imap_messages(self, args=None):
-		""" Displays the number of messages in your global IMAP inbox by default. You can define individual IMAP inboxes separately by passing arguments to this object. Arguments are: "host user pass [-i interval (in seconds)] [-f 'folder'] [-p port] [-e 'command'] [-r retries]". Default port is 143, default folder is 'INBOX', default interval is 5 minutes, and default number of retries before giving up is 5. If the password is supplied as '*', you will be prompted to enter the password when Conky starts. """
+		"""
+        Displays the number of messages in your global IMAP inbox by default.
+        You can define individual IMAP inboxes separately by passing arguments
+        to this object. Arguments are:
+        "host user pass [-i interval (in seconds)] [-f 'folder'] [-p port]
+        [-e 'command'] [-r retries]". Default port is 143, default folder is
+        'INBOX', default interval is 5 minutes, and default number of retries
+        before giving up is 5. If the password is supplied as '*', you will be
+        prompted to enter the password when Conky starts.
+        """
 		self.writeCommand('imap_messages', args)
 
 	def imap_unseen(self, args=None):
-		""" Displays the number of unseen messages in your global IMAP inbox by default. You can define individual IMAP inboxes separately by passing arguments to this object. Arguments are: "host user pass [-i interval (in seconds)] [-f 'folder'] [-p port] [-e 'command'] [-r retries]". Default port is 143, default folder is 'INBOX', default interval is 5 minutes, and default number of retries before giving up is 5. If the password is supplied as '*', you will be prompted to enter the password when Conky starts. """
+		"""
+        Displays the number of unseen messages in your global IMAP inbox by
+        default. You can define individual IMAP inboxes separately by passing
+        arguments to this object. Arguments are: "host user pass [-i interval
+        (in seconds)] [-f 'folder'] [-p port] [-e 'command'] [-r retries]".
+        Default port is 143, default folder is 'INBOX', default interval is 5
+        minutes, and default number of retries before giving up is 5. If the
+        password is supplied as '*', you will be prompted to enter the password
+        when Conky starts.
+        """
 		self.writeCommand('imap_unseen', args)
 
 	def include(self, path):
-		""" Loads the configfile at path, places the configsettings behind the configsettings in the orginal config and places the vars where the includevar stood. """
+		"""
+        Loads the configfile at path, places the configsettings behind the
+        configsettings in the orginal config and places the vars where the
+        includevar stood.
+        """
+        if not exists(path):
+            raise IOError('File %s does not exists' % path)
 		self.writeCommand('include', path)
 
 	def ioscheduler(self, disk):
-		""" Prints the current ioscheduler used for the given disk name (i.e. e.g. "hda" or "sdb") """
+		"""
+        Prints the current ioscheduler used for the given disk name
+        (i.e. e.g. "hda" or "sdb")
+        """
 		self.writeCommand('ioscheduler', disk)
 
 	def kernel(self):
@@ -713,15 +1151,30 @@ class ConkyWriter:
 
 	def lines(self, textfile):
 		""" Displays the number of lines in the given file """
+        if not exists(textfile):
+            raise IOError('File %s does not exists' % textfile)
 		self.writeCommand('lines', textfile)
 
 	def loadavg(self, n=None):
-		""" System load average, 1 is for past 1 minute, 2 for past 5 minutes and 3 for past 15 minutes. Without argument, prints all three values separated by whitespace. """
+		"""
+        System load average, 1 is for past 1 minute, 2 for past 5 minutes and 3
+        for past 15 minutes. Without argument, prints all three values separated
+        by whitespace.
+        """
         # TODO : Check if n = 1|2|3
 		self.writeCommand('loadavg', n)
 
 	def loadgraph(self, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
-		""" Load1 average graph, similar to xload, with optional colours in hex, minus the #. Uses a logarithmic scale (to see small numbers) when you use the -l switch. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). """
+		"""
+        Load1 average graph, similar to xload, with optional colours in hex,
+        minus the #. Uses a logarithmic scale (to see small numbers) when you
+        use the -l switch. Takes the switch '-t' to use a temperature gradient,
+        which makes the gradient values change depending on the amplitude of a
+        particular graph value (try it and see).
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
         parameters = [size, gradientColor1, gradientColor2, scale]
         if t:
             parameters.append('-t')
@@ -730,19 +1183,53 @@ class ConkyWriter:
 		self.writeCommand('loadgraph', parameters)
 
 	def lua(self, function_name, args=None):
-		""" Executes a Lua function with given parameters, then prints the returned string. See also 'lua_load' on how to load scripts. Conky puts 'conky_' in front of function_name to prevent accidental calls to the wrong function unless you put you place 'conky_' in front of it yourself. """
+		"""
+        Executes a Lua function with given parameters, then prints the returned
+        string. See also 'lua_load' on how to load scripts. Conky puts 'conky_'
+        in front of function_name to prevent accidental calls to the wrong
+        function unless you put you place 'conky_' in front of it yourself.
+        """
 		self.writeCommand('lua', [function_name, args])
 
 	def lua_bar(self, function_name, size=None, args=None):
-		""" Executes a Lua function with given parameters and draws a bar. Expects result value to be an integer between 0 and 100. See also 'lua_load' on how to load scripts. Conky puts 'conky_' in front of function_name to prevent accidental calls to the wrong function unless you put you place 'conky_' in front of it yourself. """
+		"""
+        Executes a Lua function with given parameters and draws a bar. Expects
+        result value to be an integer between 0 and 100. See also 'lua_load' on
+        how to load scripts. Conky puts 'conky_' in front of function_name to
+        prevent accidental calls to the wrong function unless you put you place
+        'conky_' in front of it yourself.
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
 		self.writeCommand('lua_bar', [size, function_name, args])
 
 	def lua_gauge(self, function_name, size=None, args=None):
-		""" Executes a Lua function with given parameters and draws a gauge. Expects result value to be an integer between 0 and 100. See also 'lua_load' on how to load scripts. Conky puts 'conky_' in front of function_name to prevent accidental calls to the wrong function unless you put you place 'conky_' in front of it yourself. """
+		"""
+        Executes a Lua function with given parameters and draws a gauge. Expects
+        result value to be an integer between 0 and 100. See also 'lua_load' on
+        how to load scripts. Conky puts 'conky_' in front of function_name to
+        prevent accidental calls to the wrong function unless you put you place
+        'conky_' in front of it yourself.
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
 		self.writeCommand('lua_gauge', [size, function_name, args])
 
 	def lua_graph(self, function_name, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
-		""" Executes a Lua function with and draws a graph. Expects result value to be any number, and by default will scale to show the full range. See also 'lua_load' on how to load scripts. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). Conky puts 'conky_' in front of function_name to prevent accidental calls to the wrong function unless you put you place 'conky_' in front of it yourself. """
+		""" Executes a Lua function with and draws a graph. Expects result value
+        to be any number, and by default will scale to show the full range.
+        See also 'lua_load' on how to load scripts. Takes the switch '-t' to use
+        a temperature gradient, which makes the gradient values change depending
+        on the amplitude of a particular graph value (try it and see). Conky
+        puts 'conky_' in front of function_name to prevent accidental calls to
+        the wrong function unless you put you place 'conky_' in front of it
+        yourself.
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
         parameters = [function_name, size, gradientColor1, gradientColor2, scale]
         if t:
             parameters.append('-t')
@@ -751,7 +1238,13 @@ class ConkyWriter:
 		self.writeCommand('lua_graph', parameters)
 
 	def lua_parse(self, function_name, args=None):
-		""" Executes a Lua function with given parameters as per $lua, then parses and prints the result value as per the syntax for Conky's TEXT section. See also 'lua_load' on how to load scripts. Conky puts 'conky_' in front of function_name to prevent accidental calls to the wrong function unless you put you place 'conky_' in front of it yourself. """
+		"""
+        Executes a Lua function with given parameters as per $lua, then parses
+        and prints the result value as per the syntax for Conky's TEXT section.
+        See also 'lua_load' on how to load scripts. Conky puts 'conky_' in front
+        of function_name to prevent accidental calls to the wrong function
+        unless you put you place 'conky_' in front of it yourself.
+        """
 		self.writeCommand('lua_parse', [function_name, args])
 
 	def machine(self):
@@ -759,11 +1252,20 @@ class ConkyWriter:
 		self.writeCommand('machine')
 
 	def mails(self, mailbox=None):
-		""" Mail count in the specified mailbox or your mail spool if not. Both mbox and maildir type mailboxes are supported. You can use a program like fetchmail to get mails from some server using your favourite protocol. See also new_mails. """
+		"""
+        Mail count in the specified mailbox or your mail spool if not.
+        Both mbox and maildir type mailboxes are supported. You can use a
+        program like fetchmail to get mails from some server using your
+        favourite protocol. See also new_mails.
+        """
 		self.writeCommand('mails', mailbox)
 
 	def mboxscan(self, mbox, n=None, fw=None, sw=None):
-		""" Print a summary of recent messages in an mbox format mailbox. mbox parameter is the filename of the mailbox (can be encapsulated using '"', ie. ${mboxscan -n 10 "/home/brenden/some box"} """
+		"""
+        Print a summary of recent messages in an mbox format mailbox. mbox
+        parameter is the filename of the mailbox (can be encapsulated using
+        '"', ie. ${mboxscan -n 10 "/home/brenden/some box"}
+        """
         parameters = []
         if n != None:
             parameters.append('-n')
@@ -782,11 +1284,19 @@ class ConkyWriter:
 		self.writeCommand('mem')
 
 	def membar(self, size=None):
-		""" Bar that shows amount of memory in use """
+		"""
+        Bar that shows amount of memory in use.
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
 		self.writeCommand('membar', size)
 
 	def memeasyfree(self):
-		""" Amount of free memory including the memory that is very easily freed (buffers/cache) """
+		"""
+        Amount of free memory including the memory that is very easily freed
+        (buffers/cache)
+        """
 		self.writeCommand('memeasyfree')
 
 	def memfree(self):
@@ -794,11 +1304,24 @@ class ConkyWriter:
 		self.writeCommand('memfree')
 
 	def memgauge(self, size=None):
-		""" Gauge that shows amount of memory in use (see cpugauge) """
+		"""
+        Gauge that shows amount of memory in use (see cpugauge)
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
 		self.writeCommand('memgauge', size)
 
 	def memgraph(self, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
-		""" Memory usage graph. Uses a logarithmic scale (to see small numbers) when you use the -l switch. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). """
+		"""
+        Memory usage graph. Uses a logarithmic scale (to see small numbers)
+        when you use the -l switch. Takes the switch '-t' to use a temperature
+        gradient, which makes the gradient values change depending on the
+        amplitude of a particular graph value (try it and see).
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
         parameters = [size, gradientColor1, gradientColor2, scale]
         if t:
             parameters.append('-t')
@@ -815,27 +1338,50 @@ class ConkyWriter:
 		self.writeCommand('memperc')
 
 	def mixer(self, device=None):
-		""" Prints the mixer value as reported by the OS. On Linux, this variable uses the OSS emulation, so you need the proper kernel module loaded. Default mixer is "Vol", but you can specify one of the available OSS controls: "Vol", "Bass", "Trebl", "Synth", "Pcm", "Spkr", "Line", "Mic", "CD", "Mix", "Pcm2 ", "Rec", "IGain", "OGain", "Line1", "Line2", "Line3", "Digital1", "Digital2", "Digital3", "PhoneIn", "PhoneOut", "Video", "Radio" and "Monitor". """
+		"""
+        Prints the mixer value as reported by the OS. On Linux, this variable
+        uses the OSS emulation, so you need the proper kernel module loaded.
+        Default mixer is "Vol", but you can specify one of the available OSS
+        controls: "Vol", "Bass", "Trebl", "Synth", "Pcm", "Spkr", "Line", "Mic",
+        "CD", "Mix", "Pcm2 ", "Rec", "IGain", "OGain", "Line1", "Line2",
+        "Line3", "Digital1", "Digital2", "Digital3", "PhoneIn", "PhoneOut",
+        "Video", "Radio" and "Monitor".
+        """
 		self.writeCommand('mixer', device)
 
 	def mixerbar(self, device=None):
-		""" Displays mixer value in a bar as reported by the OS. See docs for $mixer for details on arguments. """
+		"""
+        Displays mixer value in a bar as reported by the OS. See docs for $mixer
+        or details on arguments.
+        """
 		self.writeCommand('mixerbar', device)
 
-	def mixerl(self, device=None:
-		""" Prints the left channel mixer value as reported by the OS. See docs for $mixer for details on arguments. """
+	def mixerl(self, device=None):
+		"""
+        Prints the left channel mixer value as reported by the OS. See docs for
+        $mixer for details on arguments.
+        """
 		self.writeCommand('mixerl', device)
 
 	def mixerlbar(self, device=None):
-		""" Displays the left channel mixer value in a bar as reported by the OS. See docs for $mixer for details on arguments. """
+		"""
+        Displays the left channel mixer value in a bar as reported by the OS.
+        See docs for $mixer for details on arguments.
+        """
 		self.writeCommand('mixerlbar', device)
 
 	def mixerr(self, device=None):
-		""" Prints the right channel mixer value as reported by the OS. See docs for $mixer for details on arguments. """
+		"""
+        Prints the right channel mixer value as reported by the OS. See docs for
+        $mixer for details on arguments.
+        """
 		self.writeCommand('mixerr', device)
 
 	def mixerrbar(self, device=None):
-		""" Displays the right channel mixer value in a bar as reported by the OS. See docs for $mixer for details on arguments. """
+		"""
+        Displays the right channel mixer value in a bar as reported by the OS.
+        See docs for $mixer for details on arguments.
+        """
 		self.writeCommand('mixerrbar', device)
 
 	def moc_album(self):
@@ -883,11 +1429,17 @@ class ConkyWriter:
 		self.writeCommand('moc_totaltime')
 
 	def monitor(self):
-		""" Number of the monitor on which conky is running or the message "Not running in X" if this is the case. """
+		"""
+        Number of the monitor on which conky is running or the message
+        "Not running in X" if this is the case.
+        """
 		self.writeCommand('monitor')
 
 	def monitor_number(self):
-		""" Number of monitors or the message "Not running in X" if this is the case. """
+		"""
+        Number of monitors or the message "Not running in X" if this is the
+        case.
+        """
 		self.writeCommand('monitor_number')
 
 	def mpd_album(self):
@@ -939,7 +1491,10 @@ class ConkyWriter:
 		self.writeCommand('mpd_repeat')
 
 	def mpd_smart(self, maxLength=None):
-		""" Prints the song name in either the form "artist - title" or file name, depending on whats available """
+		"""
+        Prints the song name in either the form "artist - title" or file name,
+        depending on whats available
+        """
 		self.writeCommand('mpd_smart', maxLength)
 
 	def mpd_status(self):
@@ -959,11 +1514,17 @@ class ConkyWriter:
 		self.writeCommand('mpd_vol')
 
 	def nameserver(self, index=None):
-		""" Print a nameserver from /etc/resolv.conf. Index starts at and defaults to 0. """
+		"""
+        Print a nameserver from /etc/resolv.conf. Index starts at and defaults
+        to 0.
+        """
 		self.writeCommand('nameserver', index)
 
 	def new_mails(self, mailbox=None):
-		""" Unread mail count in the specified mailbox or mail spool if not. Both mbox and maildir type mailboxes are supported. """
+		"""
+        Unread mail count in the specified mailbox or mail spool if not. Both
+        mbox and maildir type mailboxes are supported.
+        """
 		self.writeCommand('new_mails', mailbox)
 
 	def nodename(self):
@@ -975,7 +1536,16 @@ class ConkyWriter:
 		self.writeCommand('nodename_short')
 
 	def nvidia(self, threshold):
-		""" Nvidia graficcard support for the XNVCtrl library. Each option can be shortened to the least significant part. Temperatures are printed as float, all other values as integer. threshold - The thresholdtemperature at which the gpu slows down temp - Gives the gpu current temperature ambient - Gives current air temperature near GPU case gpufreq - Gives the current gpu frequency memfreq - Gives the current mem frequency imagequality - Which imagequality should be chosen by OpenGL applications """
+		"""
+        Nvidia graficcard support for the XNVCtrl library. Each option can be
+        shortened to the least significant part. Temperatures are printed as
+        float, all other values as integer. threshold - The thresholdtemperature
+        at which the gpu slows down temp - Gives the gpu current temperature
+        ambient - Gives current air temperature near GPU case gpufreq - Gives
+        the current gpu frequency memfreq - Gives the current mem frequency
+        imagequality - Which imagequality should be chosen by OpenGL
+        applications
+        """
 		self.writeCommand('nvidia', threshold)
 
 	def offset(self, pixels=None):
@@ -987,11 +1557,25 @@ class ConkyWriter:
 		self.writeCommand('outlinecolor', color)
 
 	def pb_battery(self, item):
-		""" If running on Apple powerbook/ibook, display information on battery status. The item parameter specifies, what information to display. Exactly one item must be specified. Valid items are: status - Display if battery is fully charged, charging, discharging or absent (running on AC) percent - Display charge of battery in percent, if charging or discharging. Nothing will be displayed, if battery is fully charged or absent. time - Display the time remaining until the battery will be fully charged or discharged at current rate. Nothing is displayed, if battery is absent or if it's present but fully charged and not discharging. """
+		"""
+        If running on Apple powerbook/ibook, display information on battery
+        status. The item parameter specifies, what information to display.
+        Exactly one item must be specified. Valid items are: status - Display if
+        battery is fully charged, charging, discharging or absent
+        (running on AC) percent - Display charge of battery in percent, if
+        charging or discharging. Nothing will be displayed, if battery is fully
+        charged or absent. time - Display the time remaining until the battery
+        will be fully charged or discharged at current rate. Nothing is
+        displayed, if battery is absent or if it's present but fully charged and
+        not discharging.
+        """
 		self.writeCommand('pb_battery', item)
 
 	def pid_chroot(self, pid):
-		""" Directory used as rootdirectory by the process (this will be "/" unless the process did a chroot syscall) """
+		"""
+        Directory used as rootdirectory by the process (this will be "/" unless
+        the process did a chroot syscall)
+        """
 		self.writeCommand('pid_chroot', pid)
 
 	def pid_cmdline(self, pid):
@@ -1039,7 +1623,12 @@ class ConkyWriter:
 		self.writeCommand('pid_state', pid)
 
 	def pid_state_short(self, pid):
-		""" One of the chars in "RSDZTW" representing the state of the process where R is running, S is sleeping in an interruptible wait, D is waiting in uninterruptible disk sleep, Z is zombie, T is traced or stopped (on a signal), and W is paging """
+		"""
+        One of the chars in "RSDZTW" representing the state of the process where
+        R is running, S is sleeping in an interruptible wait, D is waiting in
+        uninterruptible disk sleep, Z is zombie, T is traced or stopped
+        (on a signal), and W is paging
+        """
 		self.writeCommand('pid_state_short', pid)
 
 	def pid_stderr(self, pid):
@@ -1063,11 +1652,17 @@ class ConkyWriter:
 		self.writeCommand('pid_thread_list', pid)
 
 	def pid_time_kernelmode(self, pid):
-		""" Amount of time that the process has been scheduled in kernel mode in seconds """
+		"""
+        Amount of time that the process has been scheduled in kernel mode in
+        seconds
+        """
 		self.writeCommand('pid_time_kernelmode', pid)
 
 	def pid_time_usermode(self, pid):
-		""" Amount of time that the process has been scheduled in user mode in seconds """
+		"""
+        Amount of time that the process has been scheduled in user mode in
+        seconds
+        """
 		self.writeCommand('pid_time_usermode', pid)
 
 	def pid_time(self, pid):
@@ -1150,20 +1745,48 @@ class ConkyWriter:
 		""" Total number of bytes written by the process """
 		self.writeCommand('pid_write', pid)
 
-	def platform(self, type, n, dev=None):
-		""" Platform sensor from sysfs (Linux 2.6). Parameter dev may be omitted if you have only one platform device. Platform type is either 'in' or 'vol' meaning voltage; 'fan' meaning fan; 'temp' meaning temperature. Parameter n is number of the sensor. See /sys/bus/platform/devices/ on your local computer. The optional arguments 'factor' and 'offset' allow precalculation of the raw input, which is being modified as follows: 'input = input * factor + offset'. Note that they have to be given as decimal values (i.e. contain at least one decimal place). """
-		self.writeCommand('platform')
+	def platform(self, type, n, dev=None, factor=None, offset=None):
+		"""
+        Platform sensor from sysfs (Linux 2.6). Parameter dev may be omitted if
+        you have only one platform device. Platform type is either 'in' or 'vol'
+        meaning voltage; 'fan' meaning fan; 'temp' meaning temperature.
+        Parameter n is number of the sensor. See /sys/bus/platform/devices/ on
+        your local computer. The optional arguments 'factor' and 'offset' allow
+        precalculation of the raw input, which is being modified as follows:
+        'input = input * factor + offset'. Note that they have to be given as
+        decimal values (i.e. contain at least one decimal place).
+        """
+		self.writeCommand('platform', [type, n, dev, factor, offset])
 
 	def pop3_unseen(self, args=None):
-		""" Displays the number of unseen messages in your global POP3 inbox by default. You can define individual POP3 inboxes separately by passing arguments to this object. Arguments are: "host user pass [-i interval (in seconds)] [-p port] [-e 'command'] [-r retries]". Default port is 110, default interval is 5 minutes, and default number of retries before giving up is 5. If the password is supplied as '*', you will be prompted to enter the password when Conky starts. """
+		"""
+        Displays the number of unseen messages in your global POP3 inbox by
+        default. You can define individual POP3 inboxes separately by passing
+        arguments to this object. Arguments are: "host user pass [-i interval
+        (in seconds)] [-p port] [-e 'command'] [-r retries]". Default port is
+        110, default interval is 5 minutes, and default number of retries before
+        giving up is 5. If the password is supplied as '*', you will be prompted
+        to enter the password when Conky starts.
+        """
 		self.writeCommand('pop3_unseen', args)
 
 	def pop3_used(self, args=None):
-		""" Displays the amount of space (in MiB, 2^20) used in your global POP3 inbox by default. You can define individual POP3 inboxes separately by passing arguments to this object. Arguments are: "host user pass [-i interval (in seconds)] [-p port] [-e 'command'] [-r retries]". Default port is 110, default interval is 5 minutes, and default number of retries before giving up is 5. If the password is supplied as '*', you will be prompted to enter the password when Conky starts. """
+		"""
+        Displays the amount of space (in MiB, 2^20) used in your global POP3
+        inbox by default. You can define individual POP3 inboxes separately by
+        passing arguments to this object. Arguments are: "host user pass [-i
+        interval (in seconds)] [-p port] [-e 'command'] [-r retries]". Default
+        port is 110, default interval is 5 minutes, and default number of
+        retries before giving up is 5. If the password is supplied as '*',
+        you will be prompted to enter the password when Conky starts.
+        """
 		self.writeCommand('pop3_used', args)
 
 	def pre_exec(self, shell, command):
-		""" Executes a shell command one time before conky displays anything and puts output as text. """
+		"""
+        Executes a shell command one time before conky displays anything and
+        puts output as text.
+        """
 		self.writeCommand('pre_exec', [shell, command])
 
 	def processes(self):
@@ -1171,16 +1794,39 @@ class ConkyWriter:
 		self.writeCommand('processes')
 
 	def read_tcp(self, port, host=None):
-		""" Connects to a tcp port on a host (default is localhost), reads every char available at the moment and shows them. """
+		"""
+        Connects to a tcp port on a host (default is localhost), reads every
+        char available at the moment and shows them.
+        """
 		self.writeCommand('read_tcp', [host, port])
 
 	def replied_mails(self, maildir=None):
-		""" Number of mails marked as replied in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
+		"""
+        Number of mails marked as replied in the specified mailbox or mail spool
+        if not. Only maildir type mailboxes are supported, mbox type will return
+        -1.
+        """
 		self.writeCommand('replied_mails', maildir)
 
-	def rss(self, uri, interval, action):
-		""" Download and parse RSS feeds. The interval may be a floating point value greater than 0, otherwise defaults to 15 minutes. Action may be one of the following: feed_title, item_title (with num par), item_desc (with num par) and item_titles (when using this action and spaces_in_front is given conky places that many spaces in front of each item). This object is threaded, and once a thread is created it can't be explicitly destroyed. One thread will run for each URI specified. You can use any protocol that Curl supports. """
-		self.writeCommand('rss')
+	def rss(self, uri, interval, action, numPar=None, space=None):
+		"""
+        Download and parse RSS feeds. The interval may be a floating point value
+        greater than 0, otherwise defaults to 15 minutes. Action may be one of
+        the following: feed_title, item_title (with num par), item_desc
+        (with num par) and item_titles (when using this action and
+        spaces_in_front is given conky places that many spaces in front of each
+        item). This object is threaded, and once a thread is created it can't be
+        explicitly destroyed. One thread will run for each URI specified. You
+        can use any protocol that Curl supports.
+        """
+        parameters = [url, interval, action]
+        if action == 'item_desc' or action == 'item_title':
+            if numPar == None:
+                raise ValueError('numPar parameter is expected with action %s' % action)
+            parameters.append(numPar)
+        elif action == 'item_titles':
+            parameters.append(space)
+		self.writeCommand('rss', parameters)
 
 	def running_processes(self):
 		""" Running processes (not sleeping), requires Linux 2.6 """
@@ -1191,11 +1837,23 @@ class ConkyWriter:
 		self.writeCommand('running_threads')
 
 	def scroll(self, length, text, step=None):
-		""" Scroll 'text' by 'step' characters showing 'length' number of characters at the same time. The text may also contain variables. 'step' is optional and defaults to 1 if not set. If a var creates output on multiple lines then the lines are placed behind each other separated with a '|'-sign. If you change the textcolor inside $scroll it will automatically have it's old value back at the end of $scroll. The end and the start of text will be separated by 'length' number of spaces. """
+		"""
+        Scroll 'text' by 'step' characters showing 'length' number of characters
+        at the same time. The text may also contain variables. 'step' is
+        optional and defaults to 1 if not set. If a var creates output on
+        multiple lines then the lines are placed behind each other separated
+        with a '|'-sign. If you change the textcolor inside $scroll it will
+        automatically have it's old value back at the end of $scroll. The end
+        and the start of text will be separated by 'length' number of spaces.
+        """
 		self.writeCommand('scroll', [length, step, text])
 
 	def seen_mails(self, maildir=None):
-		""" Number of mails marked as seen in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
+		"""
+        Number of mails marked as seen in the specified mailbox or mail spool if
+        not. Only maildir type mailboxes are supported, mbox type will return
+        -1.
+        """
 		self.writeCommand('seen_mails', maildir)
 
 	def shadecolor(self, color=None):
@@ -1203,27 +1861,55 @@ class ConkyWriter:
 		self.writeCommand('shadecolor', color)
 
 	def smapi(self, args=None):
-		""" when using smapi, display contents of the /sys/devices/platform/smapi directory. ARGS are either '(FILENAME)' or 'bat (INDEX) (FILENAME)' to display the corresponding files' content. This is a very raw method of accessing the smapi values. When available, better use one of the smapi_* variables instead. """
+		"""
+        when using smapi, display contents of the /sys/devices/platform/smapi
+        directory. ARGS are either '(FILENAME)' or 'bat (INDEX) (FILENAME)' to
+        display the corresponding files' content. This is a very raw method of
+        accessing the smapi values. When available, better use one of the
+        smapi_* variables instead.
+        """
 		self.writeCommand('smapi', args)
 
-	def smapi_bat_bar(self):
-		""" when using smapi, display the remaining capacity of the battery with index INDEX as a bar. """
+	def smapi_bat_bar(self, index=None, size=None):
+		"""
+        when using smapi, display the remaining capacity of the battery with
+        index INDEX as a bar.
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
 		self.writeCommand('smapi_bat_bar')
 
 	def smapi_bat_perc(self, index=None):
-		""" when using smapi, display the remaining capacity in percent of the battery with index INDEX. This is a separate variable because it supports the 'use_spacer' configuration option. """
+		"""
+        when using smapi, display the remaining capacity in percent of the
+        battery with index INDEX. This is a separate variable because it
+        supports the 'use_spacer' configuration option.
+        """
 		self.writeCommand('smapi_bat_perc', index)
 
 	def smapi_bat_power(self, index):
-		""" when using smapi, display the current power of the battery with index INDEX in watt. This is a separate variable because the original read out value is being converted from mW. The sign of the output reflects charging (positive) or discharging (negative) state. """
+		"""
+        when using smapi, display the current power of the battery with index
+        INDEX in watt. This is a separate variable because the original read out
+        value is being converted from mW. The sign of the output reflects
+        charging (positive) or discharging (negative) state.
+        """
 		self.writeCommand('smapi_bat_power', index)
 
 	def smapi_bat_temp(self, index):
-		""" when using smapi, display the current temperature of the battery with index INDEX in degree Celsius. This is a separate variable because the original read out value is being converted from milli degree Celsius. """
+		"""
+        when using smapi, display the current temperature of the battery with
+        index INDEX in degree Celsius. This is a separate variable because the
+        original read out value is being converted from milli degree Celsius.
+        """
 		self.writeCommand('smapi_bat_temp', index)
 
 	def sony_fanspeed(self):
-		""" Displays the Sony VAIO fanspeed information if sony-laptop kernel support is enabled. Linux only. """
+		"""
+        Displays the Sony VAIO fanspeed information if sony-laptop kernel
+        support is enabled. Linux only.
+        """
 		self.writeCommand('sony_fanspeed')
 
 	def stippled_hr(self, space=None):
@@ -1255,23 +1941,86 @@ class ConkyWriter:
 		self.writeCommand('sysname')
 
 	def tab(self, size=None):
-		""" Puts a tab of the specified width, starting from column 'start'. The unit is pixels for both arguments. """
+		"""
+        Puts a tab of the specified width, starting from column 'start'. The
+        unit is pixels for both arguments.
+        """
 		self.writeCommand('tab', size)
 
 	def tail(self, logfile, lines, next_check=None):
-		""" Displays last N lines of supplied text file. The file is checked every 'next_check' update. If next_check is not supplied, Conky defaults to 2. Max of 30 lines can be displayed, or until the text buffer is filled. """
+		"""
+        Displays last N lines of supplied text file. The file is checked every
+        'next_check' update. If next_check is not supplied, Conky defaults to 2.
+        Max of 30 lines can be displayed, or until the text buffer is filled.
+        """
+        if not exists(logfile):
+            raise IOError('File %s does not exists' % logfile)
 		self.writeCommand('tail', [logfile, lines, next_check])
 
 	def tcp_portmon(self, port_begin, port_end, item, index=None):
-		""" TCP port (both IPv6 and IPv4) monitor for specified local ports. Port numbers must be in the range 1 to 65535. Valid items are:count - Total number of connections in the range rip - Remote ip address rhost - Remote host name rport - Remote port number rservice - Remote service name from /etc/services lip - Local ip address lhost - Local host name lport - Local port number lservice - Local service name from /etc/services The connection index provides you with access to each connection in the port monitor. The monitor will return information for index values from 0 to n-1 connections. Values higher than n-1 are simply ignored. For the "count" item, the connection index must be omitted. It is required for all other items.Examples:${tcp_portmon 6881 6999 count} - Displays the number of connections in the bittorrent port range ${tcp_portmon 22 22 rip 0} - Displays the remote host ip of the first sshd connection ${tcp_portmon 22 22 rip 9} - Displays the remote host ip of the tenth sshd connection ${tcp_portmon 1 1024 rhost 0} - Displays the remote host name of the first connection on a privileged port ${tcp_portmon 1 1024 rport 4} - Displays the remote host port of the fifth connection on a privileged port ${tcp_portmon 1 65535 lservice 14} - Displays the local service name of the fifteenth connection in the range of all ports Note that port monitor variables which share the same port range actually refer to the same monitor, so many references to a single port range for different items and different indexes all use the same monitor internally. In other words, the program avoids creating redundant monitors. """
+		"""
+        TCP port (both IPv6 and IPv4) monitor for specified local ports. Port
+        numbers must be in the range 1 to 65535. Valid items are:count - Total
+        number of connections in the range rip - Remote ip address rhost -
+        Remote host name rport - Remote port number rservice - Remote service
+        name from /etc/services lip - Local ip address lhost - Local host name
+        lport - Local port number lservice - Local service name from
+        /etc/services The connection index provides you with access to each
+        connection in the port monitor. The monitor will return information for
+        index values from 0 to n-1 connections. Values higher than n-1 are
+        simply ignored. For the "count" item, the connection index must be
+        omitted. It is required for all other items.Examples:${tcp_portmon 6881
+        6999 count} - Displays the number of connections in the bittorrent port
+        range ${tcp_portmon 22 22 rip 0} - Displays the remote host ip of the
+        first sshd connection ${tcp_portmon 22 22 rip 9} - Displays the remote
+        host ip of the tenth sshd connection ${tcp_portmon 1 1024 rhost 0} -
+        Displays the remote host name of the first connection on a privileged
+        port ${tcp_portmon 1 1024 rport 4} - Displays the remote host port of
+        the fifth connection on a privileged port
+        ${tcp_portmon 1 65535 lservice 14} - Displays the local service name of
+        the fifteenth connection in the range of all ports Note that port
+        monitor variables which share the same port range actually refer to the
+        same monitor, so many references to a single port range for different
+        items and different indexes all use the same monitor internally. In
+        other words, the program avoids creating redundant monitors.
+        """
 		self.writeCommand('tcp_portmon', [port_begin, port_end, item, index])
 
 	def templateN(self, arg1=None):
-		""" Evaluate the content of the templateN configuration variable (where N is a value between 0 and 9, inclusively), applying substitutions as described in the documentation of the corresponding configuration variable. The number of arguments is optional, but must match the highest referred index in the template. You can use the same special sequences in each argument as the ones valid for a template definition, e.g. to allow an argument to contain a whitespace. Also simple nesting of templates is possible this way.Here are some examples of template definitions:template0 $\1\2template1 \1: ${fs_used \2} / ${fs_size \2}template2 \1 \2The following list shows sample usage of the templates defined above, with the equivalent syntax when not using any template at all: using template same without template ${template0 node name} $nodename ${template1 root /} root: ${fs_free /} / ${fs_size /} ${template1 ${template2\ disk\ root} /} disk root: ${fs_free /} / ${fs_size /} """
+		"""
+        Evaluate the content of the templateN configuration variable (where N
+        is a value between 0 and 9, inclusively), applying substitutions as
+        described in the documentation of the corresponding configuration
+        variable. The number of arguments is optional, but must match the
+        highest referred index in the template. You can use the same special
+        sequences in each argument as the ones valid for a template definition,
+        e.g. to allow an argument to contain a whitespace. Also simple nesting
+        of templates is possible this way.Here are some examples of template
+        definitions:template0 $\1\2template1 \1: ${fs_used \2} / ${fs_size \2}
+        template2 \1 \2The following list shows sample usage of the templates
+        defined above, with the equivalent syntax when not using any template
+        at all: using template same without template ${template0 node name}
+        $nodename ${template1 root /} root: ${fs_free /} / ${fs_size /}
+        ${template1 ${template2\ disk\ root} /} disk root: ${fs_free /} /
+        ${fs_size /}
+        """
+        n = int(arg1)
+        if n < 0 or n > 9:
+            raise ValueError('arg1 should be an integer between 0 and 9 (inclusive)')
 		self.writeCommand('templateN', arg1)
 
 	def texeci(self, interval, command):
-		""" Runs a command at an interval inside a thread and displays the output. Same as $execi, except the command is run inside a thread. Use this if you have a slow script to keep Conky updating. You should make the interval slightly longer then the time it takes your script to execute. For example, if you have a script that take 5 seconds to execute, you should make the interval at least 6 seconds. See also $execi. This object will clean up the thread when it is destroyed, so it can safely be used in a nested fashion, though it may not produce the desired behaviour if used this way. """
+		"""
+        Runs a command at an interval inside a thread and displays the output.
+        Same as $execi, except the command is run inside a thread. Use this if
+        you have a slow script to keep Conky updating. You should make the
+        interval slightly longer then the time it takes your script to execute.
+        For example, if you have a script that take 5 seconds to execute, you
+        should make the interval at least 6 seconds. See also $execi. This
+        object will clean up the thread when it is destroyed, so it can safely
+        be used in a nested fashion, though it may not produce the desired
+        behaviour if used this way.
+        """
 		self.writeCommand('texeci', [interval, command])
 
 	def threads(self):
@@ -1279,19 +2028,34 @@ class ConkyWriter:
 		self.writeCommand('threads')
 
 	def time(self, format=None):
-		""" Local time, see man strftime to get more information about format """
+		"""
+        Local time, see man strftime to get more information about format
+        """
 		self.writeCommand('time', format)
 
 	def to_bytes(self, size):
-		""" If 'size' is a number followed by a size-unit (kilobyte,mb,GiB,...) then it converts the size to bytes and shows it without unit, otherwise it just shows 'size'. """
+		"""
+        If 'size' is a number followed by a size-unit (kilobyte,mb,GiB,...) then
+        it converts the size to bytes and shows it without unit, otherwise it
+        just shows 'size'.
+        """
 		self.writeCommand('to_bytes', size)
 
 	def top(self, type, num):
-		""" This takes arguments in the form:top (name) (number) Basically, processes are ranked from highest to lowest in terms of cpu usage, which is what (num) represents. The types are: "name", "pid", "cpu", "mem", "mem_res", "mem_vsize", "time", "uid", "user", "io_perc", "io_read" and "io_write". There can be a max of 10 processes listed. """
+		"""
+        This takes arguments in the form:top (name) (number) Basically,
+        processes are ranked from highest to lowest in terms of cpu usage, which
+        is what (num) represents. The types are: "name", "pid", "cpu", "mem",
+        "mem_res", "mem_vsize", "time", "uid", "user", "io_perc", "io_read" and
+        "io_write". There can be a max of 10 processes listed.
+        """
 		self.writeCommand('top', [type, num])
 
 	def top_io(self, type, num):
-		""" Same as top, except sorted by the amount of I/O the process has done during the update interval """
+		"""
+        Same as top, except sorted by the amount of I/O the process has done
+        during the update interval
+        """
 		self.writeCommand('top_io', [type, num])
 
 	def top_mem(self, type, num):
@@ -1299,11 +2063,18 @@ class ConkyWriter:
 		self.writeCommand('top_mem', [type, num])
 
 	def top_time(self, type, num):
-		""" Same as top, except sorted by total CPU time instead of current CPU usage """
+		"""
+        Same as top, except sorted by total CPU time instead of current CPU
+        usage
+        """
 		self.writeCommand('top_time', [type, num])
 
 	def totaldown(self, net=None):
-		""" Total download, overflows at 4 GB on Linux with 32-bit arch and there doesn't seem to be a way to know how many times it has already done that before conky has started. """
+		"""
+        Total download, overflows at 4 GB on Linux with 32-bit arch and there
+        doesn't seem to be a way to know how many times it has already done that
+        before conky has started.
+        """
 		self.writeCommand('totaldown', net)
 
 	def totalup(self, net=None):
@@ -1311,12 +2082,21 @@ class ConkyWriter:
 		self.writeCommand('totalup', net)
 
 	def trashed_mails(self, maildir=None):
-		""" Number of mails marked as trashed in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
+		"""
+        Number of mails marked as trashed in the specified mailbox or mail spool
+        if not. Only maildir type mailboxes are supported, mbox type will return
+        -1.
+        """
 		self.writeCommand('trashed_mails', maildir)
 
-	def tztime(self):
-		""" Local time for specified timezone, see man strftime to get more information about format. The timezone argument is specified in similar fashion as TZ environment variable. For hints, look in /usr/share/zoneinfo. e.g. US/Pacific, Europe/Zurich, etc. """
-		self.writeCommand('tztime')
+	def tztime(self, timezone=None, format=None):
+		"""
+        Local time for specified timezone, see man strftime to get more
+        information about format. The timezone argument is specified in similar
+        fashion as TZ environment variable. For hints, look in
+        /usr/share/zoneinfo. e.g. US/Pacific, Europe/Zurich, etc.
+        """
+		self.writeCommand('tztime', [timezone, format])
 
 	def gid_name(self, gid):
 		""" Name of group with this gid """
@@ -1327,19 +2107,35 @@ class ConkyWriter:
 		self.writeCommand('uid_name', uid)
 
 	def unflagged_mails(self, maildir=None):
-		""" Number of mails not marked as flagged in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
+		"""
+        Number of mails not marked as flagged in the specified mailbox or mail
+        spool if not. Only maildir type mailboxes are supported, mbox type will
+        return -1.
+        """
 		self.writeCommand('unflagged_mails', maildir)
 
 	def unforwarded_mails(self, maildir=None):
-		""" Number of mails not marked as forwarded in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
+		"""
+        Number of mails not marked as forwarded in the specified mailbox or mail
+        spool if not. Only maildir type mailboxes are supported, mbox type will
+        return -1.
+        """
 		self.writeCommand('unforwarded_mails', maildir)
 
 	def unreplied_mails(self, maildir=None):
-		""" Number of mails not marked as replied in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
+		"""
+        Number of mails not marked as replied in the specified mailbox or mail
+        spool if not. Only maildir type mailboxes are supported, mbox type will
+        return -1.
+        """
 		self.writeCommand('unreplied_mails', maildir)
 
 	def unseen_mails(self, maildir=None):
-		""" Number of new or unseen mails in the specified mailbox or mail spool if not. Only maildir type mailboxes are supported, mbox type will return -1. """
+		"""
+        Number of new or unseen mails in the specified mailbox or mail spool if
+        not. Only maildir type mailboxes are supported, mbox type will return
+        -1.
+        """
 		self.writeCommand('unseen_mails', maildir)
 
 	def updates(self, n):
@@ -1355,7 +2151,16 @@ class ConkyWriter:
 		self.writeCommand('upspeedf', net)
 
 	def upspeedgraph(self, netdev=None, size=None, gradientColor1=None, gradientColor2=None, scale=None, t=False, l=False):
-		""" Upload speed graph, colours defined in hex, minus the #. If scale is non-zero, it becomes the scale for the graph. Uses a logarithmic scale (to see small numbers) when you use the -l switch. Takes the switch '-t' to use a temperature gradient, which makes the gradient values change depending on the amplitude of a particular graph value (try it and see). """
+		"""
+        Upload speed graph, colours defined in hex, minus the #. If scale is
+        non-zero, it becomes the scale for the graph. Uses a logarithmic scale
+        (to see small numbers) when you use the -l switch. Takes the switch '-t'
+        to use a temperature gradient, which makes the gradient values change
+        depending on the amplitude of a particular graph value (try it and see).
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
         parameters = [netdev, size, gradientColor1, gradientColor2, scale]
         if t:
             parameters.append('-t')
@@ -1388,7 +2193,9 @@ class ConkyWriter:
 		self.writeCommand('user_times')
 
 	def user_time(self, console):
-		""" Lists how long the user for the given console has been logged in for """
+		"""
+        Lists how long the user for the given console has been logged in for
+        """
 		self.writeCommand('user_time', console)
 
 	def utime(self, format=None):
@@ -1396,23 +2203,83 @@ class ConkyWriter:
 		self.writeCommand('utime', format)
 
 	def voffset(self, pixels=None):
-		""" Change vertical offset by N pixels. Negative values will cause text to overlap. See also $offset. """
+		"""
+        Change vertical offset by N pixels. Negative values will cause text to
+        overlap. See also $offset.
+        """
 		self.writeCommand('voffset', pixels)
 
 	def voltage_mv(self, n=None):
-		""" Returns CPU #n's voltage in mV. CPUs are counted from 1. If omitted, the parameter defaults to 1. """
+		"""
+        Returns CPU #n's voltage in mV. CPUs are counted from 1. If omitted, the
+        parameter defaults to 1.
+        """
 		self.writeCommand('voltage_mv', n)
 
 	def voltage_v(self, n=None):
-		""" Returns CPU #n's voltage in V. CPUs are counted from 1. If omitted, the parameter defaults to 1. """
+		"""
+        Returns CPU #n's voltage in V. CPUs are counted from 1. If omitted, the
+        parameter defaults to 1.
+        """
 		self.writeCommand('voltage_v', n)
 
 	def weather(self, uri, locid, data_type, interval=None):
-		""" Download, parse and display METAR data.For the 'URI', there are two possibilities: http://weather.noaa.gov/pub/data/observations/metar/stations/ http://xoap.weather.com/weather/local/The first one is free to use but the second requires you to register and obtain your partner ID and license key. These two must be written, separated by a space, into a file called .xoaprc which needs to be placed into your home directory.'locID' must be a valid location identifier for the required uri. For the NOAA site this must be a valid ICAO (see for instance https://pilotweb.nas.faa.gov/qryhtml/icao/). For the weather.com site this must be a valid location ID (see for instance http://aspnetresources.com/tools/locid.aspx).'data_type' must be one of the following:last_update - The date and time stamp of the data. The result depends on the URI used. For the NOAA site it is date (yyyy/mm/dd) and UTC time. For the weather.com one it is date ([m]m/[d]d/yy) and Local Time of the station.temperature - Air temperature (you can use the 'temperature_unit' config setting to change units)cloud_cover - The highest cloud cover statuspressure - Air pressure in millibarwind_speed - Wind speed in km/hwind_dir - Wind directionwind_dir_DEG - Compass wind directionhumidity - Relative humidity in %weather - Any relevant weather event (rain, snow, etc.). This is not used if you are querying the weather.com site since this data is aggregated into the cloud_cover oneicon - Weather icon (only for www.weather.com). Can be used together with the icon kit provided upon registering to their service.'delay_in_minutes' (optional, default 30) cannot be less than 30 minutes.This object is threaded, and once a thread is created it can't be explicitly destroyed. One thread will run for each URI specified.Note that these variables are still EXPERIMENTAL and can be subject to many future changes. """
+		"""
+        Download, parse and display METAR data.For the 'URI', there are two
+        possibilities:
+        http://weather.noaa.gov/pub/data/observations/metar/stations/
+        http://xoap.weather.com/weather/local/
+        The first one is free to use but the second requires you to register and
+        obtain your partner ID and license key. These two must be written,
+        separated by a space, into a file called .xoaprc which needs to be
+        placed into your home directory.'locID' must be a valid location
+        identifier for the required uri. For the NOAA site this must be a valid
+        ICAO (see for instance https://pilotweb.nas.faa.gov/qryhtml/icao/).
+        For the weather.com site this must be a valid location ID (see for
+        instance http://aspnetresources.com/tools/locid.aspx).'data_type' must
+        be one of the following:last_update - The date and time stamp of the
+        data. The result depends on the URI used. For the NOAA site it is date
+        (yyyy/mm/dd) and UTC time. For the weather.com one it is date
+        ([m]m/[d]d/yy) and Local Time of the station.temperature - Air
+        temperature (you can use the 'temperature_unit' config setting to change
+        units)cloud_cover - The highest cloud cover statuspressure - Air
+        pressure in millibarwind_speed - Wind speed in km/hwind_dir - Wind
+        directionwind_dir_DEG - Compass wind directionhumidity - Relative
+        humidity in %weather - Any relevant weather event (rain, snow, etc.).
+        This is not used if you are querying the weather.com site since this
+        data is aggregated into the cloud_cover oneicon - Weather icon
+        (only for www.weather.com). Can be used together with the icon kit
+        provided upon registering to their service.'delay_in_minutes' (optional,
+        default 30) cannot be less than 30 minutes.This object is threaded, and
+        once a thread is created it can't be explicitly destroyed. One thread
+        will run for each URI specified.Note that these variables are still
+        EXPERIMENTAL and can be subject to many future changes.
+        """
 		self.writeCommand('weather', [uri, locid, data_type, interval])
 
 	def weather_forecast(self, uri, locid, day, data_type, interval=None):
-		""" Download, parse and display weather forecast data for a given day (daytime only).For the 'URI', for the time being only http://xoap.weather.com/weather/local/ is supported. See 'weather' above for details of usage'locID', see 'weather' above.'day' is a number from 0 (today) to 4 (3 days after tomorrow).'data_type' must be one of the following:day - Day of the week date - Date, in the form MMM DD (ie. Jul 14) low - Minimun temperature (you can use the 'temperature_unit' config setting to change units) hi - Maximum temperature (you can use the 'temperature_unit' config setting to change units) icon - Weather icon. Can be used together with the icon kit provided upon registering to the weather.com service forecast - Weather forecast (sunny, rainy, etc.) wind_speed - Wind speed in km/h wind_dir - Wind direction wind_dir_DEG - Compass wind direction humidity - Relative humidity in % precipitation - Probability of having a precipitation (in %) 'delay_in_minutes' (optional, default 210) cannot be lower than 210 min.This object is threaded, and once a thread is created it can't be explicitly destroyed. One thread will run for each URI specified. You can use any protocol that Curl supports.Note that these variables are still EXPERIMENTAL and can be subject to many future changes. """
+		"""
+        Download, parse and display weather forecast data for a given day
+        (daytime only).For the 'URI', for the time being only
+        http://xoap.weather.com/weather/local/ is supported. See 'weather' above
+        for details of usage'locID', see 'weather' above.'day' is a number from
+        0 (today) to 4 (3 days after tomorrow).'data_type' must be one of the
+        following:day - Day of the week date - Date, in the form MMM DD
+        (ie. Jul 14) low - Minimun temperature (you can use the
+        'temperature_unit' config setting to change units) hi - Maximum
+        temperature (you can use the 'temperature_unit' config setting to
+        change units) icon - Weather icon. Can be used together with the icon
+        kit provided upon registering to the weather.com service forecast -
+        Weather forecast (sunny, rainy, etc.) wind_speed - Wind speed in km/h
+        wind_dir - Wind direction wind_dir_DEG - Compass wind direction humidity
+        - Relative humidity in % precipitation - Probability of having a
+        precipitation (in %) 'delay_in_minutes' (optional, default 210) cannot
+        be lower than 210 min.This object is threaded, and once a thread is
+        created it can't be explicitly destroyed. One thread will run for each
+        URI specified. You can use any protocol that Curl supports.Note that
+        these variables are still EXPERIMENTAL and can be subject to many future
+        changes.
+        """
 		self.writeCommand('weather_forecast', [uri, locid, day, data_type, interval])
 
 	def wireless_ap(self, net=None):
@@ -1428,7 +2295,12 @@ class ConkyWriter:
 		self.writeCommand('wireless_essid', net)
 
 	def wireless_link_bar(self, size=None, net=None):
-		""" Wireless link quality bar (Linux only) """
+		"""
+        Wireless link quality bar (Linux only)
+        Size argument should be a tuple with (height, width) format.
+        """
+        if len(size) != 2:
+            raise ValueError('Size parameter should be a 2-dimensional tuple')
 		self.writeCommand('wireless_link_bar', [size, net])
 
 	def wireless_link_qual(self, net=None):
@@ -1449,6 +2321,8 @@ class ConkyWriter:
 
 	def words(self, textfile):
 		""" Displays the number of words in the given file """
+        if not exists(textfile):
+            raise IOError('File %s does not exists' % textfile)
 		self.writeCommand('words', textfile)
 
 	def xmms2_album(self):
@@ -1504,7 +2378,10 @@ class ConkyWriter:
 		self.writeCommand('xmms2_size')
 
 	def xmms2_smart(self):
-		""" Prints the song name in either the form "artist - title" or file name, depending on whats available """
+		"""
+        Prints the song name in either the form "artist - title" or file name,
+        depending on whats available
+        """
 		self.writeCommand('xmms2_smart')
 
 	def xmms2_status(self):
