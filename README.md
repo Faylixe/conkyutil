@@ -1,2 +1,3 @@
-# conkyutil
-Simple python library that aims to be use for writing Conky script.
+# Conky Util
+
+Simple python package that provides tools for script that aims to run under Conky context.

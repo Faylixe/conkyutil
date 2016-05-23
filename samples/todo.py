@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from conkyutil import ConkyWriter
+from conkyutil.writer import ConkyWriter
 
 def getLocalTasks(prefix, file):
 	""" Extracts task from the given local task file. """

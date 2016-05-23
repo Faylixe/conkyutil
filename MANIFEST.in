@@ -1,0 +1,7 @@
+include setup.cfg
+include setup.py
+include conkyutil/__init__.py
+include conkyutil/writer.py
+include README.md
+include LICENCE.md
+include MANIFEST
