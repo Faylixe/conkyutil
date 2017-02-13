@@ -1,6 +1,6 @@
 # Conky Util
 
-[![Latest Version](http://img.shields.io/pypi/v/conkyutil.svg)](https://pypi.python.org/pypi/conkyutil/)
+[![PyPI version](https://badge.fury.io/py/conkyutil.svg)](https://badge.fury.io/py/conkyutil)
 
 Simple python package that provides tools for script that aims to run under
 Conky context. Most of it has been generated using
