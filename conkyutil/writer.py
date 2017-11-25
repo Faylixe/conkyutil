@@ -3,7 +3,7 @@ import sys
 
 from os.path import join as pjoin, exists
 
-class ConkyWriter:
+class ConkyWriter(object):
     """ ConkyWriter class allows to wrap all conky command to python method. """
 
     def __init__(self, stream=sys.stdout):
